@@ -1,6 +1,6 @@
-name: d2sdevex
-title: D2S Introduction to OpenShift Course
-version: 4.11
+name: acm-workshop
+title: Clusters and Governance
+version: 4.13
 nav:
   - modules/ROOT/nav.adoc
 

@@ -1,0 +1,60 @@
+= Adding an Existing Cluster to ACM
+
+It is also possible to add clusters to ACM control for management and governance 
+that predate the installation of ACM. 
+
+You were given cluster URL and credentials for a single node OpenShift cluster that was not created by ACM, but we want to place it under ACM management. 
+
+To do this we are going to import the cluster into ACM.
+
+Login to the bastion host associated with the single node OpenShift using the supplied credentials.
+
+== Generating the import command
+
+On the ACM web user interface go to the *clusters* section and then select *Import cluster*.
+
+[.console-input]
+[source,bash]
+----
+Name the cluster : cluster-2-<initials>
+----
+
+Leave the cluster set empty
+
+Additional labels - Add a label of:
+
+[.console-input]
+[source,bash]
+----
+ environment=prod 
+----
+
+Also add a label to identify clusters created by you. For this use:
+
+[.console-input]
+[source,bash]
+----
+lab-name=<initials>
+----
+
+Import mode : *Run import command manually*
+
+Click on the blue button marked: *Save import and generate code*
+
+You should then see a screen similar to below:
+
+image::ACM_cluster_import_cmd.png[Cluster import cmd,width=6500px,float="left",align="center"]
+
+== Executing the import command
+
+Click the *Copy* command button and paste the content into the ssh command window on the bastion host.
+
+The command is a lot of text and will end with the line base64 -d.
+
+You may see a warning about pod security and privilege escalation but that is not a problem in the demonstration environment.
+
+Wait a couple of minutes for the Multi-Cluster Management operators to be installed into the single node openshift cluster. When this is complete and the cluster has ‘called home’ to the ACM hub you will see the new cluster appear in the list of clusters as shown below.
+
+image::ACM_imported_cluster.png[Imported cluster,width=6500px,float="left",align="center"]
+
+You can now exit the ssh shell of the single node OpenShift bastion host.

@@ -4,14 +4,14 @@ runtime:
 site:
   title: D2S OpenShift Training (Dev Mode)
 #  url: http://redhat-uk.github.io/student-bootcamp-2-day/  ---- Project on github.io, yet to be created
-  start_page: d2sdevex::index.adoc
+  start_page: acm-workshop::index.adoc
 
   url:
-  start_page: d2sdevex::index.adoc
+  start_page: acm-workshop::index.adoc
 
 content:
   sources:
-    - url: git@github.com:utherp0/.d2sdevexgit
+    - url: git@github.com:utherp0/.acm-workshopgit
       tags: []
       branches: []
       start_path: documentation

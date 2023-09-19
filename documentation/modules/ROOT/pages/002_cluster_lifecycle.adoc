@@ -1,0 +1,84 @@
+= Cluster lifecycle
+
+At a high level Cluster Lifecycle management is about creating, upgrading, and destroying 
+and importing clusters in a multi cloud environment.
+
+[NOTE]
+====
+Since you are sharing the ACM cluster with other users there are several areas where you
+will see <initials>. Please replace this with your initials, or something appropriate 
+and consistent to identify your content / clusters.
+====
+
+The facilitators will also provide to you :
+
+* AWS credentials, 
+* Access Key ID, 
+* Secret Access Key,
+* Base DNS Domain.  
+
+== Create Credentials for AWS cloud environment
+
+In order to create a new OpenShift cluster in the AWS cloud we will need these keys to 
+create a Provider Connection. On the left bar, select Credentials and then select Add Credential.
+
+image::ACM_create_credentials.png[Cloud credentials,width=6500px,float="left",align="center"]
+
+You will need to provide connection details
+
+Credential Type: Choose *Amazon Web Services* and then, Amazon Web Services again
+
+[.console-input]
+[source,bash]
+----
+Credential Name:  aws-<initials> 
+----
+
+[.console-input]
+[source,bash]
+----
+Namespace: open-cluster-management
+----
+
+[.console-input]
+[source,bash]
+----
+Base DNS Domain:  This is provided by the facilitators
+----
+
+Click *NEXT*
+
+[.console-input]
+[source,bash]
+----
+Access Key ID: This is provided by the facilitators
+----
+
+[.console-input]
+[source,bash]
+----
+Secret Access Key ID: This is provided by the facilitators
+----
+
+Click *NEXT*
+
+The next field requires you to have a Red Hat login. If you don't have one then you can 
+create a user ID here : https://cloud.redhat.com/openshift/install/pull-secret[Pull secret]. 
+
+[.console-input]
+[source,bash]
+----
+Red Hat OpenShift pull secret:  Get from your Red Hat login 
+----
+
+For the ssh key it is easy to generate a matching pair here : https://www.wpoven.com/tools/create-ssh-key[SSH key pair]
+
+[.console-input]
+[source,bash]
+----
+SSH private and public keys
+----
+
+Click *NEXT*
+
+Verify the information and click *ADD*

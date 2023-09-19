@@ -1,0 +1,52 @@
+= Create cluster in AWS
+
+== Create a new OpenShift cluster in AWS
+
+From the Clusters page, select *Create Cluster*
+
+Select Amazon Web services.
+
+Select the Infrastructure provider credential: aws-<initials> 
+
+Click *Next*
+
+Enter the cluster details as described below:
+[.console-input]
+[source,bash]
+----
+Name: cluster-1-<initials> 
+----
+
+Leave the Cluster set empty for now 
+
+Select a *Release Image*, choose the latest version that is listed.
+
+Add a label:
+
+[.console-input]
+[source,bash]
+----
+environment=prod 
+----
+
+Also add a label to identify clusters created by you. For this use:
+
+[.console-input]
+[source,bash]
+----
+lab-name=<initials>
+----
+
+Click *NEXT*
+
+Change the region to eu-west-2 or eu-west-3 as shown below.
+
+image::ACM_Cluster_Creation_select_location.png[Cluster location,width=6500px,float="left",align="center"]
+
+Leave everything else as is(default) and then click *NEXT* on the other screens until you can press *Create* to create the cluster as shown below.
+
+image::ACM_Cluster_Create_Confirm.png[Cluster creation,width=6500px,float="left",align="center"]
+
+After about 45 minutes the cluster will be available.
+
+

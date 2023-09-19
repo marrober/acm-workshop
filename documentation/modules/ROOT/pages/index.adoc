@@ -1,20 +1,31 @@
-= D2S OpenShift Introduction
 
-image::d2s.png[D2S Logo,width=190px,float="right",align="center"]
 
-:!sectids:
+= Advanced Cluster Management
 
-image::000-image001.png[Screenshot,width=500px]
+image::ACM-Logo.png[ACM Logo,width=190px,float="Left",align="center"]
 
-== *A Developer's Introduction to D2S/OpenShift*
+== *An introduction to Red Hat Advanced Cluster Management*
 
-*Welcome to the D2S Developer's Introduction training material.* The goal of this online introduction is to get a Developer up to speed on the functionality and nuances of developing applications using the D2S platform.
+This workshop will guide you through the use of Red Hat Advanced Cluster Management (ACM)
+for specific operations covering cluster management and cluster governance. Multiple people will 
+use the workshop today and you will operate with a shared ACM management hub and managed 
+clusters that are specific to you personally. 
 
-The course is divided into a set of small, easy to consume, self-paced modules that cover varied aspects of the platform. It is aimed at people who have minimal experience, if any, of Kubernetes and Container platforms.
+== Workshop infrastructure
 
-Each Module contains a number of exercises to try, along with detailed explanations of what is being done. 
+The workshop facilitators will give you URL's and credentials for the clusters that you will 
+use throughout the workshop. 
 
-All that is needed to run the examples is a logon to the D2S system and a pre-created Project from the D2S team.
+Credentials will be provided for :
+
+* The ACM Hub
+* The AWS environment to which you need to connect the Hub cluster
+* A single node OpenShift instance
+
+The cluster configuration is shown below, with the shared ACM Hub cluster and 
+individual managed clusters for each user.
+
+image::ACM_workshop_clusters.png[ACM Clusters,width=500px,float="Left",align="center"]
 
 The modules are self-paced. Within the description of the Modules there will be Tips and Notes; tips give hints as to what is being done, Notes go into more details about the exercises within the Module.
 
@@ -32,9 +43,5 @@ Notes will contain in-depth information around the concepts; they are added for 
 To personalise the Modules add the cluster address (given below with a 'copy' button) and the Project you are using into the text entry boxes at the top of the interface. These are propagated through the
 examples so you only need to add them once.
 
-[.console-input]
-[source,bash]
-----
-apps.ocp1.azure.dso.digital.mod.uk
-----
+
 

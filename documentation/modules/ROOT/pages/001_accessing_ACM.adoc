@@ -1,0 +1,11 @@
+= Accessing Advanced Cluster Management
+
+As of ACM 2.7, the Web User interfaceis integrated with the OpenShift console via console plugins.
+Once logged in, navigate to the MultiCluster Switcher and select All Clusters to see the ACM UI.
+
+image::ACM_Function_Selector.png[ACM Function Selector,width=400px,float="Left",align="center"]
+
+Now, navigate to the Clusters screen, you will notice that the Hub cluster is already in 
+the list as a managed cluster (local-cluster), we will use this later in the workshop. 
+
+image::ACM_Cluster_list_initial.png[ACM Cluster list,width=750px,float="Left",align="center"]
