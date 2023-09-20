@@ -1,0 +1,125 @@
+= Governance, Risk, and Compliance
+
+== Creating Policies in ACM
+
+In the Cluster Lifecycle Lab, you learned how RHACM can help manage the lifecycles of your Kubernetes clusters, including both deploying new clusters and importing existing clusters. In that lab, you configured your RHACM instance to manage an OpenShift cluster.
+
+Now that you have a cluster, you need to make sure that they do not drift from their original configurations. This kind of drift is a serious problem, because it can happen from benign and benevolent fixes and changes, as well as malicious activities that you might not notice but can cause significant problems. The solution that RHACM provides for this is the Governance, Risk, and Compliance, or GRC, functionality.
+
+== Review GRC Functionality
+
+To begin, it is important to define exactly what GRC is. In RHACM, you build policies that are applied to managed clusters. These policies can do different things, which are described below, but they ultimately serve to govern the configurations of your clusters. This governance over your cluster configurations reduces risk and ensures compliance with standards defined by stakeholders, which can include security teams and operations teams
+
+The three types of policy controllers available in RHACM along with the remediation mode they support:
+
+=== Configuration
+
+Used to configure any Kubernetes resource across your clusters. Where these resources are created or configured is determined by the namespaces you include (or exclude) in the policy.
+
+Enforcement and inform
+
+=== Certificate
+
+Used to detect certificates that are close to expiring. You can configure the certificate policy controller by updating the minimum duration parameter in your controller policy. When a certificate expires in less than the minimum duration, the policy becomes noncompliant. Certificates are identified from secrets in the included namespaces.
+
+Inform only
+
+=== Identity and access management
+
+The IAM policy controller monitors for the desired maximum number of users with a particular cluster role (i.e. ClusterRole) in your cluster.
+
+Inform only
+
+image::ACM_governance.png[Governance,width=6500px,float="left",align="center"]
+
+== Governance resources
+
+You need to create three different resources in order to implement the policy controllers:
+
+=== Policy
+
+The Policy defines what you actually want to check and possibly configure (with enforce). Policies include a policy-template which defines a list of objectDefinitions. The policy also determines the namespaces it is applied to, as well as the remediation actions it takes.
+
+=== PlacementRule
+
+Identifies a list of managed clusters that are targeted when using this PlacementRule.
+
+=== PlacementBinding
+
+Connect the policy to the PlacementRule.
+
+=== Creating Governance resources
+
+Fortunately, the RHACM console provides an easy way to start creating basic policies, as shown below. In this example, you can see that when you change values for elements in the RHACM console, the YAML content is updated.
+
+image::ACM_creating_policy.png[Creating policy,width=6500px,float="left",align="center"]
+
+Please consult the GRC product documentation for more details on any of these policy controllers.
+
+
+== Creating Governance Policies
+
+Navigate to the Governance screen and click *create policy*. 
+
+image::ACM_create_policy_start.png[Creating policy,width=6500px,float="left",align="center"]
+
+Build a policy with the following information. Watch how the yaml evolves on the right hand side as you add details. Yaml based policies can be stored in a Git repository to be applied to the clusters using a GitOps model.
+
+[.console-input]
+[source,bash]
+----
+Name: policy-grc-cert-<initials>
+----
+
+[.console-input]
+[source,bash]
+----
+Namespace: default
+----
+
+[.console-input]
+[source,bash]
+----
+Specification: Certificate policy
+----
+
+Cluster selector - Use the two cluster labels: 
+
+[.console-input]
+[source,bash]
+----
+environment=prod 
+lab-user=<initials>
+----
+
+Leave the Standard, Category and Control as they are pre-filled based on the selection of a Certificate policy.
+
+Remediation action: Leave set to inform.
+
+The policy definition is shown on the right hand side in the block of yaml as :
+
+[.console-input]
+[source,bash]
+----
+- objectDefinition:
+    apiVersion: policy.open-cluster-management.io/v1
+    kind: CertificatePolicy
+    metadata:
+    name: policy-grc-cert-cert-expiration
+  spec:
+    namespaceSelector:
+      include:
+        - default
+      exclude:
+        - kube-*
+    remediationAction: inform
+    severity: low
+    minimumDuration: 300h
+----
+
+Feel free to change the *minimum duration* of a certificate in the above field if you want to.
+
+Click the *Create* button and watch as the policy is applied.
+
+Initially the policy will show a warning triangle but this is an indicator that it is in the process of assessing the compliance of the selected cluster(s). After a minute or so it will switch to the compliant indicator as shown below. The text on cluster violations indicates that there are 0 out of 1 cluster out of compliance.
+

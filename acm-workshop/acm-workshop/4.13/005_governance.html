@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>A Glossary of Terms :: Clusters and Governance</title>
+    <title>Governance, Risk, and Compliance :: Clusters and Governance</title>
     <meta name="generator" content="Antora 2.3.4">
     <link rel="stylesheet" href="../../_/css/site.css">
 <link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
@@ -161,6 +161,9 @@
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="004_adding_a_cluster_to_ACM.html"><strong>04</strong> - Adding a cluster to ACM</a>
   </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="005_governance.html"><strong>05</strong> - Governance</a>
+  </li>
 </ul>
   </li>
 </ul>
@@ -192,107 +195,182 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="index.html">Clusters and Governance</a></li>
-    <li><a href="100_glossary.html">A Glossary of Terms</a></li>
+    <li><a href="005_governance.html"><strong>05</strong> - Governance</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///Users/mroberts/data/git-repos/acm-workshop/documentation/modules/ROOT/pages/100_glossary.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///Users/mroberts/data/git-repos/acm-workshop/documentation/modules/ROOT/pages/005_governance.adoc">Edit this Page</a></div>
 </div>
   <div class="content">
 <article class="doc">
-<h1 class="page">A Glossary of Terms</h1>
-<div id="preamble">
+<h1 class="page">Governance, Risk, and Compliance</h1>
+<div class="sect1">
+<h2 id="_creating_policies_in_acm"><a class="anchor" href="#_creating_policies_in_acm"></a>Creating Policies in ACM</h2>
 <div class="sectionbody">
-<div class="imageblock right text-center">
-<div class="content">
-<img src="_images/d2s.png" alt="D2S Logo" width="190px">
+<div class="paragraph">
+<p>In the Cluster Lifecycle Lab, you learned how RHACM can help manage the lifecycles of your Kubernetes clusters, including both deploying new clusters and importing existing clusters. In that lab, you configured your RHACM instance to manage an OpenShift cluster.</p>
+</div>
+<div class="paragraph">
+<p>Now that you have a cluster, you need to make sure that they do not drift from their original configurations. This kind of drift is a serious problem, because it can happen from benign and benevolent fixes and changes, as well as malicious activities that you might not notice but can cause significant problems. The solution that RHACM provides for this is the Governance, Risk, and Compliance, or GRC, functionality.</p>
 </div>
 </div>
-<div class="imageblock">
+</div>
+<div class="sect1">
+<h2 id="_review_grc_functionality"><a class="anchor" href="#_review_grc_functionality"></a>Review GRC Functionality</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To begin, it is important to define exactly what GRC is. In RHACM, you build policies that are applied to managed clusters. These policies can do different things, which are described below, but they ultimately serve to govern the configurations of your clusters. This governance over your cluster configurations reduces risk and ensures compliance with standards defined by stakeholders, which can include security teams and operations teams</p>
+</div>
+<div class="paragraph">
+<p>The three types of policy controllers available in RHACM along with the remediation mode they support:</p>
+</div>
+<div class="sect2">
+<h3 id="_configuration"><a class="anchor" href="#_configuration"></a>Configuration</h3>
+<div class="paragraph">
+<p>Used to configure any Kubernetes resource across your clusters. Where these resources are created or configured is determined by the namespaces you include (or exclude) in the policy.</p>
+</div>
+<div class="paragraph">
+<p>Enforcement and inform</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_certificate"><a class="anchor" href="#_certificate"></a>Certificate</h3>
+<div class="paragraph">
+<p>Used to detect certificates that are close to expiring. You can configure the certificate policy controller by updating the minimum duration parameter in your controller policy. When a certificate expires in less than the minimum duration, the policy becomes noncompliant. Certificates are identified from secrets in the included namespaces.</p>
+</div>
+<div class="paragraph">
+<p>Inform only</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_identity_and_access_management"><a class="anchor" href="#_identity_and_access_management"></a>Identity and access management</h3>
+<div class="paragraph">
+<p>The IAM policy controller monitors for the desired maximum number of users with a particular cluster role (i.e. ClusterRole) in your cluster.</p>
+</div>
+<div class="paragraph">
+<p>Inform only</p>
+</div>
+<div class="imageblock left text-center">
 <div class="content">
-<img src="_images/001-image001.png" alt="OpenShift">
+<img src="_images/ACM_governance.png" alt="Governance" width="6500px">
+</div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2><strong>A Glossary of Technical Terms used in the Modules</strong></h2>
+<h2 id="_governance_resources"><a class="anchor" href="#_governance_resources"></a>Governance resources</h2>
 <div class="sectionbody">
-<div class="exampleblock">
+<div class="paragraph">
+<p>You need to create three different resources in order to implement the policy controllers:</p>
+</div>
+<div class="sect2">
+<h3 id="_policy"><a class="anchor" href="#_policy"></a>Policy</h3>
+<div class="paragraph">
+<p>The Policy defines what you actually want to check and possibly configure (with enforce). Policies include a policy-template which defines a list of objectDefinitions. The policy also determines the namespaces it is applied to, as well as the remediation actions it takes.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_placementrule"><a class="anchor" href="#_placementrule"></a>PlacementRule</h3>
+<div class="paragraph">
+<p>Identifies a list of managed clusters that are targeted when using this PlacementRule.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_placementbinding"><a class="anchor" href="#_placementbinding"></a>PlacementBinding</h3>
+<div class="paragraph">
+<p>Connect the policy to the PlacementRule.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_creating_governance_resources"><a class="anchor" href="#_creating_governance_resources"></a>Creating Governance resources</h3>
+<div class="paragraph">
+<p>Fortunately, the RHACM console provides an easy way to start creating basic policies, as shown below. In this example, you can see that when you change values for elements in the RHACM console, the YAML content is updated.</p>
+</div>
+<div class="imageblock left text-center">
 <div class="content">
+<img src="_images/ACM_creating_policy.png" alt="Creating policy" width="6500px">
+</div>
+</div>
 <div class="paragraph">
-<p><strong>This page contains some English explanations of some of the technical terms used in the Modules</strong></p>
+<p>Please consult the GRC product documentation for more details on any of these policy controllers.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_creating_governance_policies"><a class="anchor" href="#_creating_governance_policies"></a>Creating Governance Policies</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Navigate to the Governance screen and click <strong>create policy</strong>.</p>
+</div>
+<div class="imageblock left text-center">
+<div class="content">
+<img src="_images/ACM_create_policy_start.png" alt="Creating policy" width="6500px">
+</div>
 </div>
 <div class="paragraph">
-<p>OpenShift and Kubernetes have a lot of technical concepts; this page contains descriptions for some of the more common ones used in the Modules.</p>
+<p>Build a policy with the following information. Watch how the yaml evolves on the right hand side as you add details. Yaml based policies can be stored in a Git repository to be applied to the clusters using a GitOps model.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Name: policy-grc-cert-&lt;initials&gt;</code></pre>
 </div>
 </div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Namespace: default</code></pre>
 </div>
-<table class="tableblock frame-ends grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Technical Term</th>
-<th class="tableblock halign-left valign-top">English Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Viewport</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The OpenShift UI actually consists of two different views on the System; the Administrator one provides a more object-oriented drilldown into the contents, the Developer one provides an opinionated set of UI component specifically designed for Developer to build and maintain applications</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Project</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">OpenShift (and Kubernetes) work with a bounded set of resources. In OpenShift this is known as a <strong>Project</strong> (in Kubernetes it is known as a <strong>Namespace</strong>). The Project contains all the objects that make up your applications, and as an Owner/User of the project you have the ability to create any objects that you have access to within it.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Application</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">On the Developer Viewport of the UI, OpenShift has the concept of an application – which is short for application grouping. This is a cosmetic grouping of individual applications, allowing you to perform high level tasks on them.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Application Name</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">On the Developer Viewport of the UI, this refers to the name of the <strong>Application Grouping</strong> (defined above)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Name</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">All Objects in OpenShift have a <strong>Name</strong> which uniquely identifies them (within the confines of a Project). Be aware that this uniqueness is relative to the Project; other people may have identically named Objects in other projects.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Deployment</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A Deployment object is a kubernetes-native object that defines in very simple terms how you deploy an 'Application'. It consists of the Image to use for the Application and the number of replicas (copies) to deploy</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DeploymentConfig</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A DeploymentConfig object is an OpenShift specific Object that extends upon the concept of the Deployment object. It provides a temporal concept of rollouts (allowing you to rollback deployments) and different modes of rollout supporting zero-downtime ('rolling') and full removal before recreate ('recreate').</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Labels</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">All Objects in OpenShift support labelling. These provide a way of attaching contextual information to the Objects that make up your Applications, and these can be used by the system itself for physical placement of Applications and configuration of Applications</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Pod</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A Pod is the smallest atomic component orchestrateable by OpenShift. Kubernetes and OpenShift work with Pods, controlling when and where they are physically deployed. In the majority of case a Pod contains a single running Container, but more complicated Applications can consist of multiple Containers being executed in the same physcal Pod.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Services</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Services are port-based points of ingress of traffic into the Application. OpenShift has an SDN (software defined network) on which all the Pods live; think of the Services as singular doorbells to the ports within the Applications</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Routes</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Routes are the external connectivity into the Services (defined above). These are fully qualified domain names (FQDN) that are reachable from outside the cluster and provide the mechanism for ingressing traffic from the outside into the Application Pods.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Kebab</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This is the name for the three vertical pulldown points within OpenShift</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Instantiate</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instantiate means 'to create an instance of' and refers to the creation of individual objects within OpenShift</p></td>
-</tr>
-</tbody>
-</table>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Specification: Certificate policy</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Cluster selector - Use the two cluster labels:</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">environment=prod
+lab-user=&lt;initials&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Leave the Standard, Category and Control as they are pre-filled based on the selection of a Certificate policy.</p>
+</div>
+<div class="paragraph">
+<p>Remediation action: Leave set to inform.</p>
+</div>
+<div class="paragraph">
+<p>The policy definition is shown on the right hand side in the block of yaml as :</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">- objectDefinition:
+    apiVersion: policy.open-cluster-management.io/v1
+    kind: CertificatePolicy
+    metadata:
+    name: policy-grc-cert-cert-expiration
+  spec:
+    namespaceSelector:
+      include:
+        - default
+      exclude:
+        - kube-*
+    remediationAction: inform
+    severity: low
+    minimumDuration: 300h</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Feel free to change the <strong>minimum duration</strong> of a certificate in the above field if you want to.</p>
+</div>
+<div class="paragraph">
+<p>Click the <strong>Create</strong> button and watch as the policy is applied.</p>
+</div>
+<div class="paragraph">
+<p>Initially the policy will show a warning triangle but this is an indicator that it is in the process of assessing the compliance of the selected cluster(s). After a minute or so it will switch to the compliant indicator as shown below. The text on cluster violations indicates that there are 0 out of 1 cluster out of compliance.</p>
+</div>
 </div>
 </div>
 </article>

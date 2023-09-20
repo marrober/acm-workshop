@@ -2,3 +2,4 @@
 * xref:002_cluster_lifecycle.adoc[*02* - Cluster lifecycle]
 * xref:003_create_cluster.adoc[*03* - Create cluster]
 * xref:004_adding_a_cluster_to_ACM.adoc[*04* - Adding a cluster to ACM]
+* xref:005_governance.adoc[*05* - Governance]
