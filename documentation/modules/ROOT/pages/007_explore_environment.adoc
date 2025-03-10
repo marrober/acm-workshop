@@ -472,7 +472,7 @@ oc whoami --show-console
 .Sample Output
 [source,texinfo]
 ----
-https://console-openshift-console.apps.cluster-p6mj8.sandbox2651.opentlc.com
+https://console-openshift-console.apps.cluster-mark.sandbox2651.opentlc.com
 ----
 
 . Open this URL in a browser and log into the console using the `admin` user and the password from the welcome e-mail or the Demo system service information page.
