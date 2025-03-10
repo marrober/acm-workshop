@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Deploying Clusters using Hosted Control Planes :: Clusters and Governance</title>
+    <meta name="generator" content="Antora 2.3.4">
+    <link rel="stylesheet" href="../../_/css/site.css">
+<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () { 
+      const urlParams = new URLSearchParams(window.location.search);
+      const clusterName = urlParams.get('CLUSTER_SUBDOMAIN');
+      const projectName = urlParams.get('PROJECT');
+      if (clusterName) {
+        showCluster( clusterName );
+      }
+      else {
+        showClusterForm();
+      }
+
+      if (projectName) {
+        showProject( projectName );
+      } else {
+        showProjectForm();
+      }
+    } );
+
+
+    function sliceCluster(clusterName){
+      if (clusterName.length > 70) {
+          return "..." + clusterName.slice(35);
+      } else {
+          return clusterName;
+      }
+    }
+
+    function showCluster( clusterName ) {
+      document.getElementById('navbar-form-empty').style.display = "none";
+      document.getElementById('navbar-form-filled').style.display = "flex";
+      document.getElementById('cluster_subdomain').textContent = sliceCluster(clusterName);
+      document.getElementById('clusterfield2').value = clusterName;
+
+    }
+
+    function showClusterForm( clusterName ) {
+      document.getElementById('navbar-form-empty').style.display = "flex";
+      document.getElementById('navbar-form-filled').style.display = "none";
+    }
+
+    function gowithcluster() {
+      elClusterInput = document.getElementById('clusterfield');
+      elProjectInput = document.getElementById('projectfield2');
+
+      window.location.search = ('&CLUSTER_SUBDOMAIN=' + elClusterInput.value + '&PROJECT=' + elProjectInput.value);
+    }
+
+    function showProject( projectName ) {
+      document.getElementById('navbar-form-project-empty').style.display = "none";
+      document.getElementById('navbar-form-project-filled').style.display = "flex";
+      document.getElementById('project').textContent = projectName;
+      document.getElementById('projectfield2').value = projectName;
+    }
+
+    function showProjectForm( projectName ) {
+      document.getElementById('navbar-form-project-empty').style.display = "flex";
+      document.getElementById('navbar-form-project-filled').style.display = "none";
+    }
+
+    function gowithproject() {
+      elProjectInput = document.getElementById('projectfield');
+      elClusterInput = document.getElementById('clusterfield2');
+      window.location.search = ('&CLUSTER_SUBDOMAIN=' + elClusterInput.value + '&PROJECT=' + elProjectInput.value);
+    }
+
+  </script>
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://developers.redhat.com" target="_blank"><img
+          src="../../_/img/header_logo.png" height="40px" alt="Red Hat Developer Program"></a>
+      <a class="navbar-item" href="../..">Clusters and Governance</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <div class="navbar-item" id="navbar-form-empty">
+          <span class="navbar-text" style="margin-left: 1rem; margin-right: 1rem;">&nbsp;<i style="color: orange;"
+              class="fa fa-exclamation-triangle" aria-hidden="true"></i></span>
+
+          <form action="javascript:void(0);" onsubmit="gowithcluster();">
+            <input size="40" id="clusterfield" type="text" placeholder="Enter Cluster Subdomain">
+            <input type="hidden" id="projectfield2" name="projectfield2" value="">
+          </form>
+        </div>
+
+        <div class="navbar-item" id="navbar-form-filled" style="display: none;">
+          <span class="navbar-text" style="margin-left: 1rem; margin-right: 1rem;">|</span>
+          <span class="navbar-text" id="cluster_subdomain"></span>
+          <span class="navbar-text" style="margin-left: 1rem; margin-right: 1rem;">&nbsp;<i onclick="recycle();" style="color: green;" class="fa fa-recycle" aria-hidden="true"></i></span>
+        </div>
+
+         <div class="navbar-item" id="navbar-form-project-empty">
+          <span class="navbar-text" style="margin-left: 1rem; margin-right: 1rem;">&nbsp;<i style="color: orange;"
+              class="fa fa-exclamation-triangle" aria-hidden="true"></i></span>
+
+          <form action="javascript:void(0);" onsubmit="gowithproject();">
+            <input size="40" id="projectfield" type="text" placeholder="Enter Project Name">
+            <input type="hidden" id="clusterfield2" name="clusterfield2" value="">
+          </form>
+        </div>
+
+        <div class="navbar-item" id="navbar-form-project-filled" style="display: none;">
+          <span class="navbar-text" style="margin-left: 1rem; margin-right: 1rem;">|</span>
+          <span class="navbar-text" id="project"></span>
+          <span class="navbar-text" style="margin-left: 1rem; margin-right: 1rem;">&nbsp;<i onclick="recycle();" style="color: green;" class="fa fa-recycle" aria-hidden="true"></i></span>
+        </div>
+<!---
+        <a class="navbar-item" href="https://developers.redhat.com/ebooks/" target="_blank">Books</a>
+        <a class="navbar-item" href="https://developers.redhat.com/cheatsheets/" target="_blank">Cheat Sheets</a>
+        <a class="navbar-item" href="https://developers.redhat.com/events/" target="_blank">Upcoming Events</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">More Tutorials</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="https://redhat-scholars.github.io/kubernetes-tutorial/" target="_blank">Kubernetes</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/istio-tutorial/" target="_blank">Istio</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/quarkus-tutorial/" target="_blank">Quarkus</a>
+            <a class="navbar-item" href="https://redhat-developer-demos.github.io/knative-tutorial/" target="_blank">Knative</a>
+            <a class="navbar-item" href="https://redhat-scholars.github.io/tekton-tutorial/" target="_blank">Tekton</a>
+          </div>
+--->
+      </div>
+    </div>
+  </nav>
+</header><div class="body">
+<div class="nav-container" data-component="acm-workshop" data-version="4.13">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="index.html" class=" query-params-link">Clusters and Governance</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="001_accessing_ACM.html">ACM &amp; AWS</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="002_cluster_lifecycle.html">Cluster lifecycle</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="003_create_cluster.html">Create cluster</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="004_adding_a_cluster_to_ACM.html">Adding a cluster to ACM</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="006_hcp_introduction.html">HCP Introduction</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="007_explore_environment.html">Explore HCP Environment</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="008_deploy_cluster.html">Deploy HCP cluster</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="005_governance.html">Governance</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Clusters and Governance</span>
+    <span class="version">4.13</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Clusters and Governance</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="index.html">4.13</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="index.html">Clusters and Governance</a></li>
+    <li><a href="006_hcp_introduction.html">HCP Introduction</a></li>
+    <li><a href="008_deploy_cluster.html">Deploy HCP cluster</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="file:///Users/mroberts/data/git-repos/acm-workshop/documentation/modules/ROOT/pages/008_deploy_cluster.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Deploying Clusters using Hosted Control Planes</h1>
+<div class="sect1">
+<h2 id="_overview"><a class="anchor" href="#_overview"></a>Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now that you have an environment with the hosted control planes (HyperShift) technology preview enabled it&#8217;s time to deploy your first cluster. You will see that is it both easy and fast to create a new cluster using this approach.</p>
+</div>
+<div class="paragraph">
+<p>Right now the only way to deploy a new cluster is by using the <code>hypershift</code> CLI tool - there is no capability in the console yet. Well, there is an entry to deploy a new cluster in the console but it just shows the commands necessary for the command line.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_deploy_a_new_cluster"><a class="anchor" href="#_deploy_a_new_cluster"></a>Deploy a new cluster</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Log into your bastion VM if you are not already logged in - the instructions are in the introduction document.</p>
+</li>
+<li>
+<p>Any new cluster will be deployed using the <code>hypershift</code> command line tool. This tool is available from the hub cluster. To show the download location for the command line tool use the following command:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get consoleclidownload hcp-cli-download -o json | jq -r '.spec.links[] | select(.text=="Download hcp CLI for Linux for x86_64").href'</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Sample Output</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-texinfo hljs" data-lang="texinfo">https://hcp-cli-download-multicluster-engine.apps.cluster-cjx7q.sandbox136.opentlc.com/linux/amd64/hcp.tar.gz</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>On your environment the <code>hcp</code> command line tool has already been installed. Run it to show available options:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">hcp</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Sample Output</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-texinfo hljs" data-lang="texinfo">Usage:
+  hcp [flags]
+  hcp [command]
+
+Available Commands:
+  completion  Generate the autocompletion script for the specified shell
+  create      Commands for creating HostedClusters
+  destroy     Commands for destroying HostedClusters
+  help        Help about any command
+
+Flags:
+  -h, --help      help for hcp
+  -v, --version   version for hcp
+
+Use "hcp [command] --help" for more information about a command.</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Run it again to show the help for <code>hcp create cluster aws</code> - the command that you will use to deploy a "production" cluster into AWS:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">hcp create cluster aws --help</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>There are a lot of options available. In your environment all credentials have already been provided in a secret <code>aws-credentials</code> in the <code>local-cluster</code> namespace.</p>
+</div>
+</li>
+<li>
+<p>Create a new cluster with name <strong>production</strong>:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">hcp create cluster aws \
+  --name production \
+  --infra-id prod-${GUID} \
+  --region us-west-1 \
+  --zones us-west-1a,us-west-1c \
+  --instance-type m6a.large \
+  --root-volume-type gp3 \
+  --root-volume-size 100 \
+  --etcd-storage-class gp3-csi \
+  --control-plane-availability-policy SingleReplica \
+  --infra-availability-policy SingleReplica \
+  --network-type OVNKubernetes \
+  --release-image quay.io/openshift-release-dev/ocp-release:4.14.3-x86_64 \
+  --node-pool-replicas 1 \
+  --namespace local-cluster \
+  --secret-creds aws-credentials \
+  --auto-repair \
+  --generate-ssh</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here is what all these parameters mean. Also, if you are running this command in the demo environment, make sure you define the GUID variable and adjust AWS region and availability zones to where the hub cluster is deployed:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Parameter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Meaning</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Display) Name of the cluster</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">infra-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A unique ID for your cluster</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">region</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Which AWS region to deploy this cluster into</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">zones</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Which zones to use in the selected region. For each zone one NodePool will be created.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">instance-type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The EC2 instance for your worker nodes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">root-volume-type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The EC2 storage to be used for worker nodes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">root-volume-size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Size of the attached storage for worker nodes in GB</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">etcd-storage-class</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The OpenShift storage class to use on the hub cluster for ETCD storage.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">control-plane-availability-policy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SingleReplica or HighlyAvailable. HighlyAvailable creates three instances of each critical service (e.g. API Servers or ETCD). The hub cluster must have at least three worker nodes in three availability zones to allow separation of these pods from each other (otherwise pod anti affinity rules will prevent the pods from starting up).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">infra-availability-policy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Same as above</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">network-type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OpenShift SDN plugin to use. OVNKubernetes is the default.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">release-image</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Which OpenShift version to deploy.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">node-pool-replicas</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">How many worker nodes to set up in each NodePool.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">namespace</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The namespace to set up the HostedCluster resource in</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">secret-creds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the secret holding the baseDomain, AWS credentials and OpenShift pull secret for the cluster. It would also be possible to pass each of those values as extra parameters.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">auto-repair</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set up auto-repair for the worker nodes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">generate-ssh</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Generate new SSH keys for the worker nodes instead of using existing ones.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The output of the command should look similar to this example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-texinfo hljs" data-lang="texinfo">2023-03-30T17:21:56Z    INFO    Retreiving credentials secret   {"namespace": "local-cluster", "name": "aws-credentials"}
+Using baseDomain from the secret-creds baseDomain p6mj8.sandbox2651.opentlc.com
+2023-03-30T17:22:01Z    INFO    Creating infrastructure {"id": "prod-p6mj8"}
+2023-03-30T17:22:01Z    INFO    Found existing VPC      {"id": "vpc-0633198053299e3f0"}
+2023-03-30T17:22:01Z    INFO    Enabled DNS support on VPC      {"id": "vpc-0633198053299e3f0"}
+2023-03-30T17:22:01Z    INFO    Enabled DNS hostnames on VPC    {"id": "vpc-0633198053299e3f0"}
+2023-03-30T17:22:01Z    INFO    Found existing DHCP options     {"id": "dopt-01210482b6c7ffe48"}
+2023-03-30T17:22:01Z    INFO    Associated DHCP options with VPC        {"vpc": "vpc-0633198053299e3f0", "dhcp options": "dopt-01210482b6c7ffe48"}
+2023-03-30T17:22:02Z    INFO    Found existing internet gateway {"id": "igw-093d29dcecf570842"}
+2023-03-30T17:22:02Z    INFO    Found existing security group   {"name": "prod-p6mj8-worker-sg", "id": "sg-0d7df54294b5e7684"}
+2023-03-30T17:22:02Z    INFO    Created subnet  {"name": "prod-p6mj8-private-us-west-1b", "id": "subnet-0a40bc94583a10736"}
+2023-03-30T17:22:03Z    INFO    Created subnet  {"name": "prod-p6mj8-public-us-west-1b", "id": "subnet-005bee83e73d9a112"}
+2023-03-30T17:22:03Z    INFO    Created elastic IP for NAT gateway      {"id": "eipalloc-0e4793de5160beaaa"}
+2023-03-30T17:22:03Z    INFO    Created NAT gateway     {"id": "nat-02d8a702810534da1"}
+2023-03-30T17:22:04Z    INFO    Created route table     {"name": "prod-p6mj8-private-us-west-1b", "id": "rtb-0b1744d3f12b647d3"}
+2023-03-30T17:22:18Z    INFO    Created route to NAT gateway    {"route table": "rtb-0b1744d3f12b647d3", "nat gateway": "nat-02d8a702810534da1"}
+2023-03-30T17:22:18Z    INFO    Associated subnet with route table      {"route table": "rtb-0b1744d3f12b647d3", "subnet": "subnet-0a40bc94583a10736"}
+2023-03-30T17:22:19Z    INFO    Created subnet  {"name": "prod-p6mj8-private-us-west-1c", "id": "subnet-0db88eccad6771084"}
+2023-03-30T17:22:19Z    INFO    Created subnet  {"name": "prod-p6mj8-public-us-west-1c", "id": "subnet-0e90ff333c4d9abec"}
+2023-03-30T17:22:19Z    INFO    Created elastic IP for NAT gateway      {"id": "eipalloc-05300dfb1066bc5ff"}
+2023-03-30T17:22:20Z    INFO    Created NAT gateway     {"id": "nat-0ccc7152cb9679fc0"}
+2023-03-30T17:22:20Z    INFO    Created route table     {"name": "prod-p6mj8-private-us-west-1c", "id": "rtb-080ece6f7cd99366f"}
+2023-03-30T17:22:24Z    INFO    Created route to NAT gateway    {"route table": "rtb-080ece6f7cd99366f", "nat gateway": "nat-0ccc7152cb9679fc0"}
+2023-03-30T17:22:24Z    INFO    Associated subnet with route table      {"route table": "rtb-080ece6f7cd99366f", "subnet": "subnet-0db88eccad6771084"}
+2023-03-30T17:22:24Z    INFO    Created route table     {"name": "prod-p6mj8-public", "id": "rtb-08b757f906e3b0114"}
+2023-03-30T17:22:25Z    INFO    Set main VPC route table        {"route table": "rtb-08b757f906e3b0114", "vpc": "vpc-0633198053299e3f0"}
+2023-03-30T17:22:25Z    INFO    Created route to internet gateway       {"route table": "rtb-08b757f906e3b0114", "internet gateway": "igw-093d29dcecf570842"}
+2023-03-30T17:22:25Z    INFO    Associated route table with subnet      {"route table": "rtb-08b757f906e3b0114", "subnet": "subnet-005bee83e73d9a112"}
+2023-03-30T17:22:25Z    INFO    Associated route table with subnet      {"route table": "rtb-08b757f906e3b0114", "subnet": "subnet-0e90ff333c4d9abec"}
+2023-03-30T17:22:26Z    INFO    Created s3 VPC endpoint {"id": "vpce-09b9ebd5cf94f4e69"}
+2023-03-30T17:22:26Z    INFO    Found existing public zone      {"name": "p6mj8.sandbox2651.opentlc.com", "id": "Z00045013VC4PAOW2O6CC"}
+2023-03-30T17:22:27Z    INFO    Created private zone    {"name": "production.p6mj8.sandbox2651.opentlc.com", "id": "Z05931812G5C6C27KY5T2"}
+2023-03-30T17:22:28Z    INFO    Created private zone    {"name": "production.hypershift.local", "id": "Z07988821ZFKPESDLOD09"}
+2023-03-30T17:22:28Z    INFO    Detected Issuer URL     {"issuer": "https://oidc-storage-p6mj8.s3.us-east-2.amazonaws.com/prod-p6mj8"}
+2023-03-30T17:22:28Z    INFO    Created OIDC provider   {"provider": "arn:aws:iam::588618638711:oidc-provider/oidc-storage-p6mj8.s3.us-east-2.amazonaws.com/prod-p6mj8"}
+2023-03-30T17:22:28Z    INFO    Created role    {"name": "prod-p6mj8-openshift-ingress"}
+2023-03-30T17:22:29Z    INFO    Created role policy     {"name": "prod-p6mj8-openshift-ingress"}
+2023-03-30T17:22:29Z    INFO    Created role    {"name": "prod-p6mj8-openshift-image-registry"}
+2023-03-30T17:22:29Z    INFO    Created role policy     {"name": "prod-p6mj8-openshift-image-registry"}
+2023-03-30T17:22:29Z    INFO    Created role    {"name": "prod-p6mj8-aws-ebs-csi-driver-controller"}
+2023-03-30T17:22:29Z    INFO    Created role policy     {"name": "prod-p6mj8-aws-ebs-csi-driver-controller"}
+2023-03-30T17:22:29Z    INFO    Created role    {"name": "prod-p6mj8-cloud-controller"}
+2023-03-30T17:22:29Z    INFO    Created role policy     {"name": "prod-p6mj8-cloud-controller"}
+2023-03-30T17:22:29Z    INFO    Created role    {"name": "prod-p6mj8-node-pool"}
+2023-03-30T17:22:29Z    INFO    Created role policy     {"name": "prod-p6mj8-node-pool"}
+2023-03-30T17:22:29Z    INFO    Created role    {"name": "prod-p6mj8-control-plane-operator"}
+2023-03-30T17:22:29Z    INFO    Created role policy     {"name": "prod-p6mj8-control-plane-operator"}
+2023-03-30T17:22:30Z    INFO    Created role    {"name": "prod-p6mj8-cloud-network-config-controller"}
+2023-03-30T17:22:30Z    INFO    Created role policy     {"name": "prod-p6mj8-cloud-network-config-controller"}
+2023-03-30T17:22:30Z    INFO    Created role    {"name": "prod-p6mj8-worker-role"}
+2023-03-30T17:22:30Z    INFO    Created instance profile        {"name": "prod-p6mj8-worker"}
+2023-03-30T17:22:30Z    INFO    Added role to instance profile  {"role": "prod-p6mj8-worker-role", "profile": "prod-p6mj8-worker"}
+2023-03-30T17:22:30Z    INFO    Created role policy     {"name": "prod-p6mj8-worker-policy"}
+2023-03-30T17:22:30Z    INFO    Created IAM profile     {"name": "prod-p6mj8-worker", "region": "us-west-1"}
+2023-03-30T17:22:30Z    INFO    Applied Kube resource   {"kind": "Namespace", "namespace": "", "name": "local-cluster"}
+2023-03-30T17:22:30Z    INFO    Applied Kube resource   {"kind": "Secret", "namespace": "local-cluster", "name": "production-pull-secret"}
+2023-03-30T17:22:30Z    INFO    Applied Kube resource   {"kind": "", "namespace": "local-cluster", "name": "production"}
+2023-03-30T17:22:30Z    INFO    Applied Kube resource   {"kind": "Secret", "namespace": "local-cluster", "name": "production-etcd-encryption-key"}
+2023-03-30T17:22:30Z    INFO    Applied Kube resource   {"kind": "Secret", "namespace": "local-cluster", "name": "production-ssh-key"}
+2023-03-30T17:22:30Z    INFO    Applied Kube resource   {"kind": "NodePool", "namespace": "local-cluster", "name": "production-us-west-1b"}
+2023-03-30T17:22:30Z    INFO    Applied Kube resource   {"kind": "NodePool", "namespace": "local-cluster", "name": "production-us-west-1c"}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check that the cluster was created successfully:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get hostedcluster -n local-cluster</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Sample Output</div>
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-texinfo hljs" data-lang="texinfo">NAME          VERSION   KUBECONFIG                     PROGRESS    AVAILABLE   PROGRESSING   MESSAGE
+development   4.14.3    development-admin-kubeconfig   Completed   True        False         The hosted control plane is available
+production              production-admin-kubeconfig    Partial     False       False         Waiting for hosted control plane to be healthy</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Repeat the command until you see the following output (then press <code>Ctrl-C</code> to stop watching the hosted cluster):</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch -n 10 oc get hostedcluster -n local-cluster</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The cluster creation will take around 15 minutes so please grab refreshments and watch the output as shown below. It is also worth watching this output in the web user interface as there is a lot of useful information on the progress of the different components.</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="title">Sample Output</div>
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-texinfo hljs" data-lang="texinfo">Every 10.0s: oc get hostedcluster -n local-cluster                                bastion.p6mj8.internal: Thu Mar 30 18:34:06 2023
+
+NAME          VERSION   KUBECONFIG                     PROGRESS    AVAILABLE   PROGRESSING   MESSAGE
+development   4.14.3    development-admin-kubeconfig   Completed   True        False         The hosted control plane is available
+production              production-admin-kubeconfig    Partial     True        False         The hosted control plane is available</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>+
+That means that your control plane has been configured and the cluster is now deploying the node pools.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Check the pods that make up your new cluster&#8217;s control plane (repeat until all pods are <code>Running</code>). This will take a few minutes:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pod -n local-cluster-production</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Sample Output</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-texinfo hljs" data-lang="texinfo">NAME                                                 READY   STATUS    RESTARTS   AGE
+aws-ebs-csi-driver-controller-789579c96f-82lvm       7/7     Running   0          77s
+aws-ebs-csi-driver-operator-85f48c697b-wxl5j         1/1     Running   0          82s
+capi-provider-5fd44bf544-68nxp                       2/2     Running   0          3m42s
+catalog-operator-857b64f45c-pgl9t                    2/2     Running   0          2m12s
+certified-operators-catalog-6cd455b568-ffsd4         1/1     Running   0          2m11s
+cloud-network-config-controller-b55958d49-2r7st      3/3     Running   0          76s
+cluster-api-548887478d-d8ffd                         1/1     Running   0          3m42s
+cluster-autoscaler-5d89c896c5-bjhkm                  1/1     Running   0          3m23s
+cluster-image-registry-operator-54cb4869f8-4g66s     3/3     Running   0          2m12s
+cluster-network-operator-7f8b997549-wjr5h            1/1     Running   0          2m13s
+cluster-node-tuning-operator-76b5b7c74d-zltq4        1/1     Running   0          2m13s
+cluster-policy-controller-7fbbb5567f-n6dpb           1/1     Running   0          2m14s
+cluster-storage-operator-5bd6cb4785-v5wr2            1/1     Running   0          2m12s
+cluster-version-operator-54758cbddd-k2xd2            1/1     Running   0          2m14s
+community-operators-catalog-555bb78db7-b5fcv         1/1     Running   0          2m11s
+control-plane-operator-f7f96d59c-5lzqr               2/2     Running   0          3m42s
+csi-snapshot-controller-775b8c9fbf-t9tgn             1/1     Running   0          83s
+csi-snapshot-controller-operator-5c54b697d8-2wd8k    1/1     Running   0          2m11s
+csi-snapshot-webhook-55d6cdbf57-mj79b                1/1     Running   0          83s
+dns-operator-7c56464b75-j8kjs                        1/1     Running   0          2m13s
+etcd-0                                               2/2     Running   0          3m24s
+hosted-cluster-config-operator-fdbb57d4b-2njfc       1/1     Running   0          2m13s
+ignition-server-dcb5f6df-5c4j7                       1/1     Running   0          3m23s
+ingress-operator-7d44b68bf7-gtc9f                    3/3     Running   0          2m13s
+konnectivity-agent-6f498c79f6-n2bpm                  1/1     Running   0          3m24s
+konnectivity-server-6bb87b8cb8-zdckp                 1/1     Running   0          3m24s
+kube-apiserver-6ccb4f6b8d-8kwth                      5/5     Running   0          3m24s
+kube-controller-manager-6cfb7dd5bc-k8dzt             2/2     Running   0          90s
+kube-scheduler-6c69fd4645-pmvcb                      1/1     Running   0          2m23s
+machine-approver-85d9b947cf-8cmnq                    1/1     Running   0          3m23s
+multus-admission-controller-58958d9565-c89wq         2/2     Running   0          70s
+oauth-openshift-86786b4564-4dxc4                     2/2     Running   0          87s
+olm-operator-5647f5754b-589k5                        2/2     Running   0          2m12s
+openshift-apiserver-f89f74dfc-8476z                  2/2     Running   0          90s
+openshift-controller-manager-7d7495994d-zpfqs        1/1     Running   0          2m14s
+openshift-oauth-apiserver-54bdc55b76-tjcch           1/1     Running   0          2m14s
+openshift-route-controller-manager-766b6986c-bw7jf   1/1     Running   0          2m14s
+ovnkube-master-0                                     5/7     Running   0          54s
+packageserver-6cb7776686-cwt4p                       2/2     Running   0          2m12s
+redhat-marketplace-catalog-6c84fc668b-klmd8          1/1     Running   0          2m11s
+redhat-operators-catalog-86b9566df8-jqrb5            1/1     Running   0          2m11s</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Retrieve the kubeadmin password to access your new cluster and save it to a file in the <code>$HOME/.kube</code> directory:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get secret $(oc get hc production -n local-cluster -o json | jq -r .status.kubeadminPassword.name) -n local-cluster --template='{{ .data.password }}' | base64 -d &gt;$HOME/.kube/production.kubeadmin-password</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Retrieve the kubeconfig file to access your new cluster and save it to a file in the <code>$HOME/.kube</code> directory:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get secret $(oc get hc production -n local-cluster -o json | jq -r .status.kubeconfig.name) -n local-cluster --template='{{ .data.kubeconfig }}' | base64 -d &gt;$HOME/.kube/production-kubeconfig</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Set your <code>KUBECONFIG</code> variable to use the production cluster configuration:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export KUBECONFIG=$HOME/.kube/production-kubeconfig</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check the configuration of the cluster operators:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get co</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Sample Output</div>
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-texinfo hljs" data-lang="texinfo">NAME                                       VERSION   AVAILABLE   PROGRESSING   DEGRADED   SINCE   MESSAGE
+console
+csi-snapshot-controller
+dns
+image-registry
+ingress                                              False       True          True       20m     The "default" ingress controller reports Available=False: IngressControllerUnavailable: One or more status conditions indicate unavailable: DeploymentAvailable=False (DeploymentUnavailable: The deployment has Available status condition set to False (reason: MinimumReplicasUnavailable) with message: Deployment does not have minimum availability.)
+insights
+kube-apiserver                             4.14.3    True        False         False      21m
+kube-controller-manager                    4.14.3    True        False         False      21m
+kube-scheduler                             4.14.3    True        False         False      21m
+kube-storage-version-migrator
+monitoring
+network                                    4.14.3    True        True          True       20m     DaemonSet "/openshift-ovn-kubernetes/ovnkube-node" rollout is not making progress - last change 2023-03-30T18:36:50Z...
+openshift-apiserver                        4.14.3    True        False         False      21m
+openshift-controller-manager               4.14.3    True        False         False      21m
+openshift-samples
+operator-lifecycle-manager                 4.14.3    True        False         False      21m
+operator-lifecycle-manager-catalog         4.14.3    True        False         False      21m
+operator-lifecycle-manager-packageserver   4.14.3    True        False         False      21m
+service-ca
+storage</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Depending on how long you waited since you deployed the cluster you may see that some cluster operators are not yet available.</p>
+</div>
+</li>
+<li>
+<p>Check your nodes:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get nodes</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Sample Output (No nodes available yet)</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-texinfo hljs" data-lang="texinfo">No resources found</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Sample Output (Nodes available but not ready yet)</div>
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-texinfo hljs" data-lang="texinfo">NAME                                         STATUS     ROLES    AGE   VERSION
+ip-10-0-129-3.us-west-1.compute.internal     NotReady   worker   11s   v1.27.6+b49f9d1
+ip-10-0-147-241.us-west-1.compute.internal   NotReady   worker   12s   v1.27.6+b49f9d1</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Sample Output (Nodes available))</div>
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-texinfo hljs" data-lang="texinfo">NAME                                         STATUS   ROLES    AGE   VERSION
+ip-10-0-129-3.us-west-1.compute.internal     Ready    worker   17m   v1.27.6+b49f9d1
+ip-10-0-147-241.us-west-1.compute.internal   Ready    worker   17m   v1.27.6+b49f9d1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Again depending on how long it has been since you created the cluster you may see no nodes, NotReady nodes or you may already see the completely deployed nodes.</p>
+</div>
+</li>
+<li>
+<p>Once the nodes are ready go back and check the Cluster Operators. Repeat this command until the output looks like the one below - this can take a few minutes.</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get co</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Sample Output</div>
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-texinfo hljs" data-lang="texinfo">NAME                                       VERSION   AVAILABLE   PROGRESSING   DEGRADED   SINCE   MESSAGE
+console                                    4.14.3    True        False         False      20s
+csi-snapshot-controller                    4.14.3    True        False         False      6m57s
+dns                                        4.14.3    True        False         False      2m35s
+image-registry                             4.14.3    True        False         False      2m26s
+ingress                                    4.14.3    True        False         False      119s
+insights                                   4.14.3    True        False         False      3m20s
+kube-apiserver                             4.14.3    True        False         False      7m7s
+kube-controller-manager                    4.14.3    True        False         False      7m7s
+kube-scheduler                             4.14.3    True        False         False      7m7s
+kube-storage-version-migrator              4.14.3    True        False         False      2m47s
+monitoring                                 4.14.3    True        False         False      58s
+network                                    4.14.3    True        False         False      6m52s
+node-tuning                                4.14.3    True        False         False      3m51s
+openshift-apiserver                        4.14.3    True        False         False      7m7s
+openshift-controller-manager               4.14.3    True        False         False      7m7s
+openshift-samples                          4.14.3    True        False         False      2m4s
+operator-lifecycle-manager                 4.14.3    True        False         False      6m36s
+operator-lifecycle-manager-catalog         4.14.3    True        False         False      6m55s
+operator-lifecycle-manager-packageserver   4.14.3    True        False         False      7m6s
+service-ca                                 4.14.3    True        False         False      3m17s
+storage                                    4.14.3    True        False         False      3m43s</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Retrieve the OpenShift console URL:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc whoami --show-console</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Sample Output</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-texinfo hljs" data-lang="texinfo">https://console-openshift-console.apps.production.kvrsc.sandbox766.opentlc.com</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Open a web browser and use the previously retrieved kubeadmin password to log into the console as <code>kubeadmin</code>.</p>
+</li>
+<li>
+<p>Explore the Console.</p>
+</li>
+<li>
+<p>Once you are done exploring unset the <code>KUBECONFIG</code> variable to move back to your hub cluster.</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">unset KUBECONFIG</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_import_cluster_to_rhacm"><a class="anchor" href="#_import_cluster_to_rhacm"></a>Import cluster to RHACM</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to manage the cluster using Red Hat Advanced Cluster Management for Kubernetes you need to import it into RHACM. The easiest way to do that is to create a <code>ManagedCluster</code> resource that contains information about your cluster - like the labels that you would like to set.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create the ManagedCluster resource:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt; EOF | oc apply -f -
+---
+apiVersion: cluster.open-cluster-management.io/v1
+kind: ManagedCluster
+metadata:
+  name: production
+  annotations:
+    import.open-cluster-management.io/hosting-cluster-name: local-cluster
+    import.open-cluster-management.io/klusterlet-deploy-mode: Hosted
+  labels:
+    name: production
+    cloud: auto-detect
+    cluster.open-cluster-management.io/clusterset: default
+    vendor: OpenShift
+    guid: ${GUID}
+    rhdp_type: sandbox
+    rhdp_purpose: production
+spec:
+  hubAcceptsClient: true
+  leaseDurationSeconds: 60
+EOF</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Validate that your managed cluster has been created:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get managedcluster</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Sample Output</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-texinfo hljs" data-lang="texinfo">NAME            HUB ACCEPTED   MANAGED CLUSTER URLS                                                                         JOINED   AVAILABLE   AGE
+development     true           https://a3ec8aa1e521d4fbd8fb24881828fe82-13e768b6e6dd55bc.elb.us-east-2.amazonaws.com:6443   True     True        5h17m
+local-cluster   true           https://api.cluster-p6mj8.sandbox2651.opentlc.com:6443                                       True     True        5h21m
+production      true           https://a355c9fa1f51143bca15661ccb23c008-cf0807c5e2b039b6.elb.us-east-2.amazonaws.com:6443   True     True        4m47s</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Once your cluster has been imported you can get more information about the managed cluster by examining the resource:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get managedcluster production -o yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Just like with the development cluster the managed cluster object shows total and available capacity of the cluster as well as other properties like the console URL under the <code>status.clusterClaims</code> section.</p>
+</div>
+</li>
+<li>
+<p>Log into your hub cluster console and validate that your new production cluster is also available in the Infrastructure / Clusters overview page.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_enabling_klusterletaddonconfig_for_the_managed_cluster"><a class="anchor" href="#_enabling_klusterletaddonconfig_for_the_managed_cluster"></a>Enabling KlusterletAddonConfig for the managed cluster</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to deploy applications to the new managed cluster you need to create a <code>KlusterletAddonConfig</code> for the managed cluster telling ACM to deploy the management pieces to the new cluster.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create the KlusterletAddonConfig:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt; EOF | oc apply -f -
+apiVersion: agent.open-cluster-management.io/v1
+kind: KlusterletAddonConfig
+metadata:
+  name: production
+  namespace: production
+spec:
+  clusterName: production
+  clusterNamespace: production
+  clusterLabels:
+    cloud: auto-detect
+    vendor: auto-detect
+  applicationManager:
+    enabled: true
+  certPolicyController:
+    enabled: true
+  iamPolicyController:
+    enabled: true
+  policyController:
+    enabled: true
+  searchCollector:
+    enabled: false
+EOF</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_deleting_a_cluster_with_hosted_control_planes"><a class="anchor" href="#_deleting_a_cluster_with_hosted_control_planes"></a>Deleting a cluster with hosted control planes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Deleting a cluster with hosted control planes is a two step process. First delete the ManagedCluster resource, then run <code>hypershift destroy</code> to delete the HostedCluster resource and AWS cloud infrastructure.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Delete the ManagedCluster. Note that this command is blocking for a while because of the finalizer in the ManagedCluster resource.</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc delete managedcluster production</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You could also <strong>Detach</strong> the cluster from the clusters view of the web console by clicking the three dot menu on the far right of the cluster and selecting <strong>Detach Cluster</strong>. That also deletes the ManagedCluster resource.</p>
+</div>
+<div class="paragraph">
+<p>If you deleted via the command line you can see that the status of the cluster in the console changed to <strong>Pending Import</strong>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>You can not delete a cluster from the console so you need to delete it from the command line. The best way to do that is via the <code>hypershift</code> command line utility because that also cleans up the AWS resources (subnets, VPCs, EIPs) that got created when the cluster got deployed.</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">hcp destroy cluster aws \
+  --name production \
+  --infra-id production-${GUID} \
+  --region us-west-2 \
+  --secret-creds aws-credentials \
+  --namespace local-cluster</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Sample Output</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-texinfo hljs" data-lang="texinfo">2023-03-30T21:03:14Z    INFO    Retreiving credentials secret   {"namespace": "local-cluster", "name": "aws-credentials"}
+2023-03-30T21:03:14Z    INFO    Found hosted cluster    {"namespace": "local-cluster", "name": "production"}
+2023-03-30T21:03:15Z    INFO    Updated finalizer for hosted cluster    {"namespace": "local-cluster", "name": "production"}
+2023-03-30T21:03:15Z    INFO    Deleting hosted cluster {"namespace": "local-cluster", "name": "production"}
+Using baseDomain from the secret-creds baseDomain p6mj8.sandbox2651.opentlc.com
+2023-03-30T21:07:12Z    INFO    Destroying infrastructure       {"infraID": "prod-p6mj8"}
+2023-03-30T21:07:13Z    INFO    Deleted wildcard record from public hosted zone {"id": "Z00045013VC4PAOW2O6CC", "name": "*.apps.production.p6mj8.sandbox2651.opentlc.com"}
+2023-03-30T21:07:14Z    INFO    Deleted S3 Bucket       {"name": "prod-p6mj8-image-registry-us-west-1-uwcdkvgcokhadufnebrwqmuheg"}
+2023-03-30T21:07:15Z    INFO    Deleted ELB     {"name": "af2b0bd970c6e4af0aad3ff9060543d8"}
+2023-03-30T21:07:16Z    INFO    Deleted VPC endpoints   {"IDs": "vpce-0fedbad1bffa1d721"}
+2023-03-30T21:07:17Z    INFO    Deleted records from private hosted zone        {"id": "Z06774713IPSD2INVR46F", "names": ["\\052.apps.production.p6mj8.sandbox2651.opentlc.com."]}
+2023-03-30T21:07:17Z    INFO    Deleted private hosted zone     {"id": "Z06774713IPSD2INVR46F", "name": "production.p6mj8.sandbox2651.opentlc.com."}
+2023-03-30T21:07:17Z    INFO    Deleted private hosted zone     {"id": "Z06769036A1VHULXAH09", "name": "production.hypershift.local."}
+2023-03-30T21:07:17Z    INFO    Deleted route from route table  {"table": "rtb-0a9c51dc5ef196ab0", "destination": "0.0.0.0/0"}
+
+[... output omitted ...]
+
+2023-03-30T21:08:18Z    INFO    Removed role from instance profile      {"profile": "prod-p6mj8-worker", "role": "prod-p6mj8-worker-role"}
+2023-03-30T21:08:18Z    INFO    Deleted instance profile        {"profile": "prod-p6mj8-worker"}
+2023-03-30T21:08:18Z    INFO    Deleted role policy     {"role": "prod-p6mj8-worker-role", "policy": "prod-p6mj8-worker-policy"}
+2023-03-30T21:08:18Z    INFO    Deleted role    {"role": "prod-p6mj8-worker-role"}
+2023-03-30T21:08:18Z    INFO    Deleting Secrets        {"namespace": "local-cluster"}
+2023-03-30T21:08:18Z    INFO    Deleted CLI generated secrets
+2023-03-30T21:08:18Z    INFO    Finalized hosted cluster        {"namespace": "local-cluster", "name": "production"}
+2023-03-30T21:08:18Z    INFO    Successfully destroyed cluster and infrastructure       {"namespace": "local-cluster", "name": "production", "infraID": "prod-p6mj8"}</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <a class="rhd-logo" href="https://developers.redhat.com" target="_blank"></div>
+</footer>
+<script src="../../_/js/vendor/clipboard.js"></script>
+<script src="../../_/js/site.js"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

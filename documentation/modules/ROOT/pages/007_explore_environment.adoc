@@ -1,0 +1,489 @@
+= Deploying Clusters using Hosted Control Planes
+
+== Exploring your Environment
+
+Let's explore what has been set up in the environment.
+
+. Log into the bastion VM using the provided SSH command and password.
++
+.Example (use your own URL)
+[source,sh]
+----
+ssh lab-user@bastion.p6mj8.sandbox2651.opentlc.com
+----
+
+. On the bastion VM examine the hub cluster:
++
+[.console-input]
+[source,bash]
+----
+oc get nodes
+----
++
+.Sample Output
+[source,texinfo,options=nowrap]
+----
+NAME                                         STATUS   ROLES                  AGE    VERSION
+ip-10-0-145-251.us-east-2.compute.internal   Ready    control-plane,master   103m    v1.27.6+b49f9d1
+ip-10-0-190-177.us-east-2.compute.internal   Ready    worker                 98m     v1.27.6+b49f9d1
+ip-10-0-193-147.us-east-2.compute.internal   Ready    control-plane,master   103m    v1.27.6+b49f9d1
+ip-10-0-202-20.us-east-2.compute.internal    Ready    control-plane,master   103m    v1.27.6+b49f9d1
+ip-10-0-227-190.us-east-2.compute.internal   Ready    worker                 98m     v1.27.6+b49f9d1
+ip-10-0-227-213.us-east-2.compute.internal   Ready    worker                 97m     v1.27.6+b49f9d1
+----
+
+. You will see that your hub cluster has three control plane nodes (`master, control-plane`) and three worker nodes (`worker`).
+
+. Validate that the `MultiClusterHub` (RHACM) is deployed and ready:
++
+[.console-input]
+[source,bash]
+----
+oc get multiclusterhub -n open-cluster-management
+----
++
+.Sample Output
+[source,texinfo]
+----
+NAME              STATUS    AGE
+multiclusterhub   Running   81m
+----
+
+. All hosted control plane configuration is stored in a Kubernetes custom resource called `HostedCluster` in the project `local-cluster`. Additionally to be managed by RHACM there is also a cluster-wide custom resource called `ManagedCluster`.
++
+Examine the hosted cluster that has already been predeployed for you.
++
+Switch to the project `local-cluster`
++
+[.console-input]
+[source,bash]
+----
+oc project local-cluster
+----
+
+. Get a list of hosted clusters:
++
+[.console-input]
+[source,bash]
+----
+oc get hostedcluster
+----
++
+.Sample Output
+[source,texinfo,options=nowrap]
+----
+NAME          VERSION   KUBECONFIG                     PROGRESS    AVAILABLE   PROGRESSING   MESSAGE
+development   4.14.3    development-admin-kubeconfig   Completed   True        False         The hosted control plane is available
+----
++
+[NOTE]
+====
+If your environment just finished provisioning you may see that the hosted cluster is still progressing. In that case the output will look something like this:
+
+[source,texinfo,options=nowrap]
+----
+NAMESPACE       NAME          VERSION   KUBECONFIG                     PROGRESS   AVAILABLE   PROGRESSING   MESSAGE
+local-cluster   development             development-admin-kubeconfig   Partial    True        False         The hosted control plane is available
+----
+
+In that case wait until the hosted cluster shows that Progress is *Completed* and the hosted cluster is *Available*.
+====
+
+. Examine the hosted cluster:
++
+[.console-input]
+[source,bash]
+----
+oc get hc development -o yaml
+----
+
+. You will see *a lot* of information about this cluster. Under `Spec:` note the following items:
+
+* *dns*: Note the base domain for your hosted cluster as well as public and private Route53 zone IDs.
+* *etcd*: You will see that the ETCD storage is backed by a `PersistentVolumeClaim` on the hub cluster using `gp3-csi` as the Kubernetes storage class.
+* *networking*: You will see the various `CIDR` blocks for IP addresses for the cluster. You will also see that the network type for this environment has been set to `OVNKubernetes`.
+* *platform / aws*: Properties about the hosting platform (only AWS is supported in the Tech Preview). You will see that your cluster has been deployed in the `us-west-2a` zone in the region `us-west-2`. Note that this is only true for worker nodes and networking infrastructure like AWS Elastic Load Balancers. The control plane is entirely running as pods on the hub cluster. We will explore that a little bit later.
+* *release / Image*: The OpenShift release that was installed.
+* *services*: which components of OpenShift have been set up with which properties.
+
+. Under the `status:` section scroll down past all the conditions messages and note the following items:
+
+* *controlPlaneEndpoint*: the API server URL and port for your cluster
+* *kubeadminPassword / name*: The name of the secret in the `local-cluster` namespace containing the password for the `kubeadmin` user.
+* *kubeconfig / name*: The name of the secret in the `local-cluster` namespace containing the kubeconfig YAML file for `system:admin` for your cluster.
+
+. Switch to the project `local-cluster-development` which holds all the resources for this `development` cluster.
++
+[.console-input]
+[source,bash]
+----
+oc project local-cluster-development
+----
+
+. List the pods in this project:
++
+[.console-input]
+[source,bash]
+----
+oc get pod
+----
++
+.Sample Output
+[source,texinfo,options=nowrap]
+----
+NAME                                                  READY   STATUS    RESTARTS   AGE
+aws-ebs-csi-driver-controller-56b6858765-pv8d8        7/7     Running   0          73m
+aws-ebs-csi-driver-operator-85f48c697b-dszpc          1/1     Running   0          73m
+capi-provider-64dd9bf548-rshn7                        2/2     Running   0          75m
+catalog-operator-6ff9bdd8bc-lv26h                     2/2     Running   0          74m
+certified-operators-catalog-5869f6c754-dxvk9          1/1     Running   0          74m
+cloud-network-config-controller-84bcc86dbd-zstcg      3/3     Running   0          73m
+cluster-api-6cbd6b955b-4b8mz                          1/1     Running   0          75m
+cluster-autoscaler-7c69b647fc-tvmhz                   1/1     Running   0          75m
+cluster-image-registry-operator-57d767bb46-5hj8l      3/3     Running   0          74m
+cluster-network-operator-5d85cdfc7c-nhswf             1/1     Running   0          74m
+cluster-node-tuning-operator-7f9f54ffd8-47bf4         1/1     Running   0          74m
+cluster-policy-controller-545d498565-5vq5v            1/1     Running   0          74m
+cluster-storage-operator-6c7cdf4b7f-gjdd2             1/1     Running   0          74m
+cluster-version-operator-644b55b6dd-rz8nz             1/1     Running   0          74m
+community-operators-catalog-5cb87df8fc-tsgvw          1/1     Running   0          74m
+control-plane-operator-5fd4dddd44-x8267               2/2     Running   0          75m
+csi-snapshot-controller-775b8c9fbf-5jfj4              1/1     Running   0          73m
+csi-snapshot-controller-operator-859698d7f4-vdgjt     1/1     Running   0          74m
+csi-snapshot-webhook-55d6cdbf57-cxs8j                 1/1     Running   0          73m
+dns-operator-88679d75c-r74zq                          1/1     Running   0          74m
+etcd-0                                                2/2     Running   0          75m
+hosted-cluster-config-operator-84479c79dd-llc5g       1/1     Running   0          74m
+ignition-server-66bd9c4b67-gwxr6                      1/1     Running   0          75m
+ingress-operator-5f7d8445ff-44j95                     3/3     Running   0          74m
+konnectivity-agent-77ff99dbcc-fbmm2                   1/1     Running   0          75m
+konnectivity-server-6cc6c57656-5zj29                  1/1     Running   0          75m
+kube-apiserver-6c558b89d4-xqwlv                       5/5     Running   0          75m
+kube-controller-manager-5d985b6684-f96ct              2/2     Running   0          68m
+kube-scheduler-6498cb9547-gt7sd                       1/1     Running   0          74m
+machine-approver-5f87cf4475-8q75x                     1/1     Running   0          75m
+multus-admission-controller-77469fb8f9-npgf7          2/2     Running   0          72m
+oauth-openshift-58cd699d6f-f2ktb                      2/2     Running   0          73m
+olm-operator-d6c96d8f8-mpqdd                          2/2     Running   0          74m
+openshift-apiserver-56f569b698-k6gnb                  2/2     Running   0          68m
+openshift-controller-manager-5d6f45b47b-f495d         1/1     Running   0          74m
+openshift-oauth-apiserver-586778cfd8-4pbhv            1/1     Running   0          74m
+openshift-route-controller-manager-75764df6f7-qm6bt   1/1     Running   0          74m
+ovnkube-master-0                                      7/7     Running   0          72m
+packageserver-654c444b98-q7hgl                        2/2     Running   0          74m
+redhat-marketplace-catalog-5d98bc6c76-nv7qv           1/1     Running   0          74m
+redhat-operators-catalog-5f4f546446-tdlss             1/1     Running   0          40m
+----
+
+. Note all the pods that make up a cluster's control plane: etcd, api servers, various cluster operators, Operator Lifecycle Manager pods etc.
+
+. Also note that this cluster was set up with `SingleRedundancy` - meaning that there is only one pod for each control plane component - for example the API Server or `etcd` StatefulSet.
+
+=== Managed Cluster
+
+The hosted cluster is managed by the `MultiClusterEngine` operator. To add the managed cluster to Red Hat Advanced Cluster Manager for Kubernetes it has to have a corresponding `ManagedCluster` resource.
+
+For your environment this managed cluster has already been configured. Let's take a moment to examine what has been set up.
+
+. List the managed clusters that are available on your hub cluster. Managed clusters are cluster wide resources so you don't need to specify a namespace.
++
+[.console-input]
+[source,bash]
+----
+oc get managedclusters
+----
++
+.Sample Output
+[source,texinfo,options=nowrap]
+----
+NAME            HUB ACCEPTED   MANAGED CLUSTER URLS                                                                         JOINED   AVAILABLE   AGE
+development     true           https://a3ec8aa1e521d4fbd8fb24881828fe82-13e768b6e6dd55bc.elb.us-east-2.amazonaws.com:6443   True     True        76m
+local-cluster   true           https://api.cluster-p6mj8.sandbox2651.opentlc.com:6443                                       True     True        80m
+----
+
+. There are two managed clusters available: `local-cluster` - which is your hub cluster - and `development` which is the small development cluster that has already been pre-deployed.
++
+Examine the development managed cluster:
++
+[.console-input]
+[source,bash]
+----
+oc get managedcluster development -o yaml
+----
+
+. Note the following properties:
+* `metadata.labels`: These are all the labels for the managed cluster that you can use to assign workloads to clusters. Note the `cloud`, `name` and `vendor` labels. These have been created automatically when the cluster was imported. The labels `guid`, `rhdp_type` and `rhdp_usage` were set by the logic that deployed the environment.
+* `status.allocatable` and `status.capacity` tell you about the resource state of the managed cluster.
+* `status.clusterClaims` has more information about the cluster. Most importantly you will find the URL for the OpenShift console under `consoleurl.cluster.open-cluster-management.io`.
+
+Every time you create another managed cluster you will need to create the managed cluster custom resource to import the cluster into RHACM.
+
+=== Worker Nodes
+
+The only additonal Node VMs (or in our case AWS EC2 Instances) that were created are for the worker nodes.
+
+When deploying a cluster with a hosted control plane you can specify over how many AWS availability zones you want to spread your cluster and how many worker nodes to deploy into each availability zones. For each availablity zone the operator will create one `NodePool` to reflect the worker nodes in that zone.
+
+This cluster was configured in only one AWS availability zone (`us-west-2a`) with 1 worker instance in each.
+
+. Examine the `NodePool` that got created (these objects live in the `local-cluster` project):
++
+[.console-input]
+[source,bash]
+----
+oc get nodepools -n local-cluster
+----
++
+.Sample Output
+[source,texinfo,options="nowrap"]
+----
+NAME                     CLUSTER       DESIRED NODES   CURRENT NODES   AUTOSCALING   AUTOREPAIR   VERSION   UPDATINGVERSION   UPDATINGCONFIG   MESSAGE
+development-us-west-2a   development   1               1               False         True         4.14.3
+----
++
+You will see that there is only one `NodePool`, that it is supposed to have one worker node and that one worker node is available.
++
+You will also see that autoscaling is disabled for this node pool and that auto repair is enabled. And finally you will see the OpenShift version for these worker nodes.
+
+. Examine the `Machine` object that got created for your worker node. Note that this is a *different* custom resource than what you may be used to from the OpenShift Machine API. This `Machine` object is actually in the resource group `cluster.x-k8s.io/v1beta1`. So to specify that you want to see the objects from that resource group you need to specify that when running the `oc get` command.
++
+[.console-input]
+[source,bash]
+----
+oc get machine.cluster
+----
++
+.Sample Output
+[source,texinfo,options="nowrap"]
+----
+NAME                                      CLUSTER     NODENAME                                     PROVIDERID                              PHASE     AGE   VERSION
+development-us-west-2a-66485f7756-6bwxz   dev-p6mj8   ip-10-0-135-251.us-west-2.compute.internal   aws:///us-west-2a/i-0a302ed5455e1f44c   Running   78m   4.14.3
+----
+
+. Because this cluster is running on AWS there is also a corresponding `AWSMachine`:
++
+[.console-input]
+[source,bash]
+----
+oc get awsmachine
+----
++
+.Sample Output
+[source,texinfo,options="nowrap"]
+----
+NAME                           CLUSTER     STATE     READY   INSTANCEID                              MACHINE
+development-us-west-2a-7dlbh   dev-p6mj8   running   true    aws:///us-west-2a/i-0a302ed5455e1f44c   development-us-west-2a-66485f7756-6bwxz
+----
+
+. Feel free to dig deeper into both the `Machine` and `AWSMachine` objects by looking at the YAML definitions.
+
+== Examine the provisioned cluster
+
+Now that you have investigated how cluster definition has been created you can examine the actual deployed cluster.
+
+The cluster that has been created is called *development*. In order to connect to this cluster you will need a `kubeconfig` file.
+
+As you have previously seen the password for the `kubeadmin` user and the `kubeconfig` configuration are available as a secrets in the hub cluster's namespace - in our case this is the `local-cluster` namespace.
+
+. Retrieve the name of the secret holding the kubeadmin password from the hosted cluster resource:
++
+[.console-input]
+[source,bash]
+----
+oc get hc development -n local-cluster -o json | jq -r .status.kubeadminPassword.name
+----
++
+.Sample Output
+[source,texinfo]
+----
+development-kubeadmin-password
+----
++
+[TIP]
+====
+If you get an error that `jq` is not installed then run the following steps to install it:
+
+[.console-input]
+[source,bash]
+----
+sudo dnf -y install jq
+----
+====
+
+. Retrieve the name of the secret holding the kubeconfig YAML file from the hosted cluster resource:
++
+[.console-input]
+[source,bash]
+----
+oc get hc development -n local-cluster -o json | jq -r .status.kubeconfig.name
+----
++
+.Sample Output
+[source,texinfo]
+----
+development-admin-kubeconfig
+----
+
+. Get the password for the `kubeadmin` user:
++
+[.console-input]
+[source,bash]
+----
+oc get secret $(oc get hc development -n local-cluster -o json | jq -r .status.kubeadminPassword.name) -n local-cluster --template='{{ .data.password }}' | base64 -d ; echo
+----
++
+.Sample Output
+[source,texinfo]
+----
+5hU9W-kUErN-TGuX6-xHpeA
+----
+
+. Get the kubeconfig configuration for the `system:admin` user:
++
+[.console-input]
+[source,bash]
+----
+oc get secret $(oc get hc development -n local-cluster -o json | jq -r .status.kubeconfig.name) -n local-cluster --template='{{ .data.kubeconfig }}' | base64 -d ; echo
+----
++
+.Sample Output
+[source,texinfo]
+----
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURFRENDQWZpZ0F3SUJBZ0lJR2ducDhWVEdScGt3RFFZSktvWklodmNOQVFFTEJRQXdKakVTTUJBR0ExVUUKQ3hNSmIzQmxibk5vYVdaME1SQXdEZ1lEVlFRREV3ZHliMjkwTFdOaE1CNFhEVEl5TVRBeU9ERTFOREkxTkZvWApEVE15TVRBeU5URTFOREkxTkZvd0pqRVNNQkFHQTFVRUN4TUpiM0JsYm5Ob2FXWjBNUkF3RGdZRFZRUURFd2R5CmIyOTBMV05oTUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUEzbVI1LzFmdWRiNlQKSjNueVBJNmphUDNsSzgvYURHV3VhMnMyNmVUNWJ5RnJ6ZW01YzJTS2tvWHMvYzd3N1kzOWVReG43eVFLWmpiNAo1dk1qajM2OEpGdDE4TG5HNnQ0SFRlZUM2YVAzK1pXZ2ZhOUZ2KzcrRDcvdUJQbkxoK2tIK1gycXVXMmlxTktjCm80Y25EV3ZUWnVJT1BSNFo0T0Zxc3VWcEV1OFZMQmZibHRCOTNGVTJTRHEwUzlzemtPb3VuMmhjcjE3ajBsVXAKWnk1enFseGsvU0ZKbklneXhDVEdsZVhOS0ZFOEpYZnVQeXpKQUNFVHZ3U0VRc2tNblBqZkxYaGtDWFNBTXNRYQp3anl6ZGxEVDFhRCszMlRodFFCQ25xbHQ2eGNKM2tXQld4Qnh3M3FSVCtwSEF3MVVEQlg1SGJnbFdMUk81eVlXCnFvelBzRmVPdlFJREFRQUJvMEl3UURBT0JnTlZIUThCQWY4RUJBTUNBcVF3RHdZRFZSMFRBUUgvQkFVd0F3RUIKL3pBZEJnTlZIUTRFRmdRVVZyTUxqalhmZVNzTkZrMDFoSWYxSzdla0Y3NHdEUVlKS29aSWh2Y05BUUVMQlFBRApnZ0VCQUtqQXFPK00zaEFoYml5MlJITWgrdVRQdXcyby83Qjh6eFVZaTBwZjRnMVlrSnV5enBUVC9Rdy9lcGhYClZVNVlYS3NUNW5CeFhGWHNiaGhMNHA3a3had2orU2lBQW1OMzdsbjUxTjFBczI0ZlZZODdhQnFrenZuaEYxdksKQXhiN2hreDdiaDQxOU5Jc0VHVlN6SUlORG8ydlkxWnNJdnJKeHhobW5BUkpja1lxVTBJVytpZUc0MkNreGdMTwprNEV2UzZEOVpyRHdMWlRuR2Juck9Dcis1dmI2ZS9HZVI1OHVnRnRFZzBnN0RJRlVmMUloK216ZzBJY2VCMkxLCll5VjNWZmF3eGRoZjZwS3VYcFlFcTllQmNjU3hLaW1JdHhQeG1TK2cwdU0xL2loUUQ4NTVCQXVqRDZYSTNsYi8KOGdZL3lnRm16dTdsd0hNaFF4WGUxZWlzL2l3PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+    server: https://a3ec8aa1e521d4fbd8fb24881828fe82-13e768b6e6dd55bc.elb.us-east-2.amazonaws.com:6443
+  name: cluster
+
+  [... output omitted ...]
+----
+
+. Now luckily the environment already has this information available on your bastion VM so you don't have to remember the password or create the kubeconfig file.
++
+Set your `KUBECONFIG` environment variable to the kubeconfig file that has been set up on your system:
++
+[.console-input]
+[source,bash]
+----
+export KUBECONFIG=$HOME/.kube/development.kubeconfig
+----
+
+. Now explore the `development` cluster:
++
+[.console-input]
+[source,bash]
+----
+oc get nodes
+----
++
+.Sample Output
+[source,texinfo,options=nowrap]
+----
+NAME                                         STATUS   ROLES    AGE   VERSION
+ip-10-0-135-251.us-west-2.compute.internal   Ready    worker   75m   v1.27.6+b49f9d1
+----
++
+Note that there is only one `worker` nodes, no `control-plane` nodes. That's because the control plane for this cluster is hosted as pods on the hub cluster as you previously explored.
+
+. Explore the cluster operators:
++
+[.console-input]
+[source,bash]
+----
+oc get co
+----
++
+.Sample Output
+[source,texinfo,options=nowrap]
+----
+NAME                                       VERSION   AVAILABLE   PROGRESSING   DEGRADED   SINCE   MESSAGE
+console                                    4.14.3    True        False         False      71m
+csi-snapshot-controller                    4.14.3    True        False         False      79m
+dns                                        4.14.3    True        False         False      74m
+image-registry                             4.14.3    True        False         False      73m
+ingress                                    4.14.3    True        False         False      73m
+insights                                   4.14.3    True        False         False      75m
+kube-apiserver                             4.14.3    True        False         False      79m
+kube-controller-manager                    4.14.3    True        False         False      79m
+kube-scheduler                             4.14.3    True        False         False      79m
+kube-storage-version-migrator              4.14.3    True        False         False      74m
+monitoring                                 4.14.3    True        False         False      72m
+network                                    4.14.3    True        False         False      79m
+node-tuning                                4.14.3    True        False         False      75m
+openshift-apiserver                        4.14.3    True        False         False      79m
+openshift-controller-manager               4.14.3    True        False         False      79m
+openshift-samples                          4.14.3    True        False         False      73m
+operator-lifecycle-manager                 4.14.3    True        False         False      78m
+operator-lifecycle-manager-catalog         4.14.3    True        False         False      79m
+operator-lifecycle-manager-packageserver   4.14.3    True        False         False      79m
+service-ca                                 4.14.3    True        False         False      75m
+storage                                    4.14.3    True        False         False      75m
+----
++
+Note that there a quite a few less cluster operators on a cluster with a hosted control plane than on a regular OpenShift cluster. This is of course because the control plane is not managed by the cluster operators but by RHACM.
+
+. Get the URL of the OpenShift Console:
++
+[.console-input]
+[source,bash]
+----
+oc whoami --show-console
+----
++
+.Sample Output
+[source,texinfo]
+----
+https://console-openshift-console.apps.development.p6mj8.sandbox2651.opentlc.com
+----
+
+. In a web browser navigate to this URL and log in as `kubeadmin` using the kubeadmin password you retrieved earlier. You can also find this kubeadmin password by running the following command:
++
+[.console-input]
+[source,bash]
+----
+cat $HOME/.kube/development.kubeadmin-password; echo
+----
++
+You will need accept the certificate warning twice - this is because this cluster is a vanilla OpenShift cluster without any customizations like certificates or authentication.
+
+. Navigate around the managed cluster and notice that it looks just like a regular OpenShift Cluster.
+
+. Close the console browser window and switch back to your hub cluster by unsetting the `KUBECONFIG` variable.
++
+[.console-input]
+[source,bash]
+----
+unset KUBECONFIG
+----
+
+== Explore the Hub Cluster Console
+
+The last section in this introductory lab is to examine the hub cluster and the multi cluster console.
+
+. Retrieve the Console URL (or refer to the e-mail you got when you provisioned the environment).
++
+[.console-input]
+[source,bash]
+----
+oc whoami --show-console
+----
++
+.Sample Output
+[source,texinfo]
+----
+https://console-openshift-console.apps.cluster-p6mj8.sandbox2651.opentlc.com
+----
+
+. Open this URL in a browser and log into the console using the `admin` user and the password from the welcome e-mail or the Demo system service information page.
+
+. Notice that in the top left corner you see a drop down menu that reads *local-cluster*. This signifies that you are operating on the local cluster - your hub cluster.
+. Click the *local-cluster* dropdown and select *All Clusters*. This opens the (simplified version of the) Red Hat Advanced Cluster Management for Kubernetes console.
+. If not already there click on *Infrastructure* on the left and then select *Clusters*. You will see that you have two clusters, the *local-cluster* which is also the *Hub* cluster and the *development* cluster that uses *Hypershift* as its infrastructure.
+. Click on the *development* cluster and explore the information available. Note that on the *Nodes* tab you also see the one worker node that has been provisioned.
+ 
+== Next steps
+
+This concludes the exploratory section of this lab. 
+
+Follow https://github.com/redhat-cop/openshift-lab-origin/blob/master/HyperShift_Lab/Deploy_Cluster.adoc[Deploy a cluster using HyperShift] to deploy a new cluster into your environment using HyperShift.

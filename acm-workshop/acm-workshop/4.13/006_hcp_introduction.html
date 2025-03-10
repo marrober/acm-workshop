@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Cluster lifecycle :: Clusters and Governance</title>
+    <title>Deploying Clusters using Hosted Control Planes :: Clusters and Governance</title>
     <meta name="generator" content="Antora 2.3.4">
     <link rel="stylesheet" href="../../_/css/site.css">
 <link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
@@ -153,7 +153,7 @@
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="001_accessing_ACM.html">ACM &amp; AWS</a>
 <ul class="nav-list">
-  <li class="nav-item is-current-page" data-depth="2">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="002_cluster_lifecycle.html">Cluster lifecycle</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -164,7 +164,7 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item is-current-page" data-depth="1">
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="006_hcp_introduction.html">HCP Introduction</a>
 <ul class="nav-list">
@@ -210,129 +210,157 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="index.html">Clusters and Governance</a></li>
-    <li><a href="001_accessing_ACM.html">ACM &amp; AWS</a></li>
-    <li><a href="002_cluster_lifecycle.html">Cluster lifecycle</a></li>
+    <li><a href="006_hcp_introduction.html">HCP Introduction</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///Users/mroberts/data/git-repos/acm-workshop/documentation/modules/ROOT/pages/002_cluster_lifecycle.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///Users/mroberts/data/git-repos/acm-workshop/documentation/modules/ROOT/pages/006_hcp_introduction.adoc">Edit this Page</a></div>
 </div>
   <div class="content">
 <article class="doc">
-<h1 class="page">Cluster lifecycle</h1>
-<div id="preamble">
+<h1 class="page">Deploying Clusters using Hosted Control Planes</h1>
+<div class="sect1">
+<h2 id="_introduction"><a class="anchor" href="#_introduction"></a>Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>At a high level Cluster Lifecycle management is about creating, upgrading, and destroying
-and importing clusters in a multi cloud environment.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Since you are sharing the ACM cluster with other users there are several areas where you
-will see &lt;initials&gt;. Please replace this with your initials, or something appropriate
-and consistent to identify your content / clusters.</p>
-</div>
-</td>
-</tr>
-</table>
+<p>Using hosted control planes is a way to deploy the Control Plane of Red Hat OpenShift Container Platform clusters as pods on other clusters dramatically decreasing the time it takes to provision a new cluster. Worker nodes are still deployed as virtual machines and managed using the new <code>Machine.cluster.x-k8s.io/v1beta1</code> API.</p>
 </div>
 <div class="paragraph">
-<p>The facilitators will also provide to you :</p>
+<p>Hosted control planes are currently in Tech Preview on Red Hat Advanced Cluster Management for Kubernetes version 2.7.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">The catalog item deploys the following environment</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>OpenShift Container Platform 4.14.</p>
+</li>
+<li>
+<p>Red Hat Advanced Cluster Management for Kubernetes (RHACM) 2.9 installed and configured.</p>
+</li>
+<li>
+<p>Technology preview for HyperShift enabled and configured on RHACM.</p>
+</li>
+<li>
+<p>A small "development" cluster has been pre-deployed using hosted control planes.</p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>The instructions cover the following scenarios:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>AWS credentials,</p>
+<p>Introduction (this document)</p>
 </li>
 <li>
-<p>Access Key ID,</p>
+<p>Explore the pre-installed environment (this document)</p>
 </li>
 <li>
-<p>Secret Access Key,</p>
+<p><a href="https://github.com/redhat-cop/openshift-lab-origin/blob/master/HyperShift_Lab/Explore_Environment.adoc">Exploring the Environment</a></p>
 </li>
 <li>
-<p>Base DNS Domain.</p>
+<p><a href="https://github.com/redhat-cop/openshift-lab-origin/blob/master/HyperShift_Lab/Deploy_Cluster.adoc">Deploy a cluster using HyperShift</a></p>
+</li>
+<li>
+<p><a href="https://github.com/redhat-cop/openshift-lab-origin/blob/master/HyperShift_Lab/Deploy_Application.adoc">Deploy an application to both clusters using RHACM</a></p>
 </li>
 </ul>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_create_credentials_for_aws_cloud_environment"><a class="anchor" href="#_create_credentials_for_aws_cloud_environment"></a>Create Credentials for AWS cloud environment</h2>
+<h2 id="_documentation"><a class="anchor" href="#_documentation"></a>Documentation</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In order to create a new OpenShift cluster in the AWS cloud we will need these keys to
-create a Provider Connection. On the left bar, select Credentials and then select Add Credential.</p>
+<p>Further documentation about enabling, configuring and using hosted control planes can be found at the following link:</p>
 </div>
-<div class="imageblock left text-center">
-<div class="content">
-<img src="_images/ACM_create_credentials.png" alt="Cloud credentials" width="6500px">
+<div class="ulist">
+<ul>
+<li>
+<p>RHACM 2.9: <a href="https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.9/html/clusters/cluster_mce_overview#hosted-control-planes-intro" class="bare">https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.9/html/clusters/cluster_mce_overview#hosted-control-planes-intro</a></p>
+</li>
+</ul>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_information_you_will_need"><a class="anchor" href="#_information_you_will_need"></a>Information you will need</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Once your environment has been provisioned the following information will be available in the service page of your Environment on the Red Hat Demo System. You will also receive an e-mail with the following information:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Console URL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://console-openshift-console.apps.cluster-p6mj8.sandbox2651.opentlc.com" class="bare">https://console-openshift-console.apps.cluster-p6mj8.sandbox2651.opentlc.com</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cluster admin user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">admin</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cluster admin password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EDdYfrIoygYEPP4n</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cluster users</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">user1 .. user2</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cluster user (common) password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3pNVc0JCPRZeby4i</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SSH command to connect to the bastion VM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ssh <a href="mailto:lab-user@bastion.p6mj8.sandbox2651.opentlc.com">lab-user@bastion.p6mj8.sandbox2651.opentlc.com</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SSH password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">YhTVpCoq1P8j</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service Management URL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://demo.redhat.com/services/user-wkulhane-redhat-com/sandboxes-gpte.ocp4-acm-hypershift.prod" class="bare">https://demo.redhat.com/services/user-wkulhane-redhat-com/sandboxes-gpte.ocp4-acm-hypershift.prod</a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Make note of the following information:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The SSH command to connect to you environment&#8217;s bastion&#8217;s VM</p>
+</li>
+<li>
+<p>The password to be used with user <code>lab-user</code> on the bastion VM</p>
+</li>
+<li>
+<p>Also the OpenShift console URL along with the credentials for the <code>admin</code> user.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next steps</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This concludes the introduction section of this lab.</p>
 </div>
 <div class="paragraph">
-<p>You will need to provide connection details</p>
-</div>
-<div class="paragraph">
-<p>Credential Type: Choose <strong>Amazon Web Services</strong> and then, Amazon Web Services again</p>
-</div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Credential Name:  aws-&lt;initials&gt;</code></pre>
-</div>
-</div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Namespace: open-cluster-management</code></pre>
-</div>
-</div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Base DNS Domain:  This is provided by the facilitators</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Click <strong>NEXT</strong></p>
-</div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Access Key ID: This is provided by the facilitators</code></pre>
-</div>
-</div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Secret Access Key ID: This is provided by the facilitators</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Click <strong>NEXT</strong></p>
-</div>
-<div class="paragraph">
-<p>The next field requires you to have a Red Hat login. If you don&#8217;t have one then you can
-create a user ID here : <a href="https://cloud.redhat.com/openshift/install/pull-secret">Pull secret</a>.</p>
-</div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Red Hat OpenShift pull secret:  Get from your Red Hat login</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>For the ssh key it is easy to generate a matching pair here : <a href="https://www.wpoven.com/tools/create-ssh-key">SSH key pair</a></p>
-</div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">SSH private and public keys</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Click <strong>NEXT</strong></p>
-</div>
-<div class="paragraph">
-<p>Verify the information and click <strong>ADD</strong></p>
+<p>Follow <a href="https://github.com/redhat-cop/openshift-lab-origin/blob/master/HyperShift_Lab/Explore_Environment.adoc">Exploring the Environment</a> to explore what has been pre-deployed for you.</p>
 </div>
 </div>
 </div>
