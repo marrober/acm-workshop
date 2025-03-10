@@ -140,7 +140,7 @@
     </div>
   </nav>
 </header><div class="body">
-<div class="nav-container" data-component="acm-workshop" data-version="4.13">
+<div class="nav-container" data-component="acm-workshop" data-version="4.16">
   <aside class="nav">
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
@@ -151,33 +151,33 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="001_accessing_ACM.html"><strong>01</strong> - Accessing ACM</a>
+    <a class="nav-link" href="001_accessing_ACM.html">ACM &amp; AWS</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="002_cluster_lifecycle.html"><strong>02</strong> - Cluster lifecycle</a>
+    <a class="nav-link" href="002_cluster_lifecycle.html">Cluster lifecycle</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="003_create_cluster.html"><strong>03</strong> - Create cluster</a>
+    <a class="nav-link" href="003_create_cluster.html">Create cluster</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="004_adding_a_cluster_to_ACM.html"><strong>04</strong> - Adding a cluster to ACM</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="005_governance.html"><strong>05</strong> - Governance</a>
+    <a class="nav-link" href="004_adding_a_cluster_to_ACM.html">Adding a cluster to ACM</a>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="006_hcp_introduction.html"><strong>06</strong> - HCP Introduction</a>
+    <a class="nav-link" href="006_hcp_introduction.html">HCP Introduction</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="007_explore_environment.html"><strong>07</strong> - Explore HCP Environment</a>
+    <a class="nav-link" href="007_explore_environment.html">Explore HCP Environment</a>
   </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="#008_deploy_cluster.adoc"><strong>08</strong> - Deploy HCP cluster</a>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="008_deploy_cluster.html">Deploy HCP cluster</a>
   </li>
 </ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="005_governance.html">Governance</a>
   </li>
 </ul>
   </li>
@@ -187,14 +187,14 @@
 <div class="nav-panel-explore" data-panel="explore">
   <div class="context">
     <span class="title">Clusters and Governance</span>
-    <span class="version">4.13</span>
+    <span class="version">4.16</span>
   </div>
   <ul class="components">
     <li class="component is-current">
       <span class="title">Clusters and Governance</span>
       <ul class="versions">
         <li class="version is-current is-latest">
-          <a href="index.html">4.13</a>
+          <a href="index.html">4.16</a>
         </li>
       </ul>
     </li>
@@ -210,10 +210,11 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="index.html">Clusters and Governance</a></li>
-    <li><a href="008_deploy_cluster.adoc.html">Deploying Clusters using Hosted Control Planes</a></li>
+    <li><a href="006_hcp_introduction.html">HCP Introduction</a></li>
+    <li><a href="008_deploy_cluster.html">Deploy HCP cluster</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///Users/mroberts/data/git-repos/acm-workshop/documentation/modules/ROOT/pages/008_deploy_cluster.adoc.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///Users/mroberts/data/git-repos/acm-workshop/documentation/modules/ROOT/pages/008_deploy_cluster.adoc">Edit this Page</a></div>
 </div>
   <div class="content">
 <article class="doc">
@@ -239,9 +240,9 @@
 </li>
 <li>
 <p>Any new cluster will be deployed using the <code>hypershift</code> command line tool. This tool is available from the hub cluster. To show the download location for the command line tool use the following command:</p>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">oc get consoleclidownload hcp-cli-download -o json | jq -r '.spec.links[] | select(.text=="Download hcp CLI for Linux for x86_64").href'</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get consoleclidownload hcp-cli-download -o json | jq -r '.spec.links[] | select(.text=="Download hcp CLI for Linux for x86_64").href'</code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -253,9 +254,9 @@
 </li>
 <li>
 <p>On your environment the <code>hcp</code> command line tool has already been installed. Run it to show available options:</p>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">hypershift</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">hcp</code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -281,9 +282,9 @@ Use "hcp [command] --help" for more information about a command.</code></pre>
 </li>
 <li>
 <p>Run it again to show the help for <code>hcp create cluster aws</code> - the command that you will use to deploy a "production" cluster into AWS:</p>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">hcp create cluster aws --help</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">hcp create cluster aws --help</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -292,13 +293,13 @@ Use "hcp [command] --help" for more information about a command.</code></pre>
 </li>
 <li>
 <p>Create a new cluster with name <strong>production</strong>:</p>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">hcp create cluster aws \
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">hcp create cluster aws \
   --name production \
   --infra-id prod-${GUID} \
   --region us-west-1 \
-  --zones us-west-1b,us-west-1c \
+  --zones us-west-1a,us-west-1c \
   --instance-type m6a.large \
   --root-volume-type gp3 \
   --root-volume-size 100 \
@@ -468,9 +469,9 @@ Using baseDomain from the secret-creds baseDomain p6mj8.sandbox2651.opentlc.com
 </li>
 <li>
 <p>Check that the cluster was created successfully:</p>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">oc get hostedcluster -n local-cluster</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get hostedcluster -n local-cluster</code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -484,15 +485,21 @@ production              production-admin-kubeconfig    Partial     False       F
 </li>
 <li>
 <p>Repeat the command until you see the following output (then press <code>Ctrl-C</code> to stop watching the hosted cluster):</p>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">watch -n 10 oc get hostedcluster -n local-cluster</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">watch -n 10 oc get hostedcluster -n local-cluster</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>The cluster creation will take around 15 minutes so please grab refreshments and watch the output as shown below. It is also worth watching this output in the web user interface as there is a lot of useful information on the progress of the different components.</p>
+</div>
+</li>
+</ol>
 </div>
 <div class="listingblock">
 <div class="title">Sample Output</div>
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-texinfo hljs" data-lang="texinfo">Every 10.0s: oc get hostedcluster -n local-cluster                                                                                                         bastion.p6mj8.internal: Thu Mar 30 18:34:06 2023
+<pre class="highlightjs highlight nowrap"><code class="language-texinfo hljs" data-lang="texinfo">Every 10.0s: oc get hostedcluster -n local-cluster                                bastion.p6mj8.internal: Thu Mar 30 18:34:06 2023
 
 NAME          VERSION   KUBECONFIG                     PROGRESS    AVAILABLE   PROGRESSING   MESSAGE
 development   4.14.3    development-admin-kubeconfig   Completed   True        False         The hosted control plane is available
@@ -500,14 +507,16 @@ production              production-admin-kubeconfig    Partial     True        F
 </div>
 </div>
 <div class="paragraph">
-<p>That means that your control plane has been configured and the cluster is now deploying the node pools.</p>
+<p>+
+That means that your control plane has been configured and the cluster is now deploying the node pools.</p>
 </div>
-</li>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
 <p>Check the pods that make up your new cluster&#8217;s control plane (repeat until all pods are <code>Running</code>). This will take a few minutes:</p>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">oc get pod -n local-cluster-production</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pod -n local-cluster-production</code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -560,33 +569,33 @@ redhat-operators-catalog-86b9566df8-jqrb5            1/1     Running   0        
 </li>
 <li>
 <p>Retrieve the kubeadmin password to access your new cluster and save it to a file in the <code>$HOME/.kube</code> directory:</p>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">oc get secret $(oc get hc production -n local-cluster -o json | jq -r .status.kubeadminPassword.name) -n local-cluster --template='{{ .data.password }}' | base64 -d &gt;$HOME/.kube/production.kubeadmin-password</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get secret $(oc get hc production -n local-cluster -o json | jq -r .status.kubeadminPassword.name) -n local-cluster --template='{{ .data.password }}' | base64 -d &gt;$HOME/.kube/production.kubeadmin-password</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Retrieve the kubeconfig file to access your new cluster and save it to a file in the <code>$HOME/.kube</code> directory:</p>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">oc get secret $(oc get hc production -n local-cluster -o json | jq -r .status.kubeconfig.name) -n local-cluster --template='{{ .data.kubeconfig }}' | base64 -d &gt;$HOME/.kube/production-kubeconfig</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get secret $(oc get hc production -n local-cluster -o json | jq -r .status.kubeconfig.name) -n local-cluster --template='{{ .data.kubeconfig }}' | base64 -d &gt;$HOME/.kube/production-kubeconfig</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Set your <code>KUBECONFIG</code> variable to use the production cluster configuration:</p>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">export KUBECONFIG=$HOME/.kube/production-kubeconfig</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export KUBECONFIG=$HOME/.kube/production-kubeconfig</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Check the configuration of the cluster operators:</p>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">oc get co</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get co</code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -621,9 +630,9 @@ storage</code></pre>
 </li>
 <li>
 <p>Check your nodes:</p>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">oc get nodes</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get nodes</code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -654,9 +663,9 @@ ip-10-0-147-241.us-west-1.compute.internal   Ready    worker   17m   v1.27.6+b49
 </li>
 <li>
 <p>Once the nodes are ready go back and check the Cluster Operators. Repeat this command until the output looks like the one below - this can take a few minutes.</p>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">oc get co</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get co</code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -689,9 +698,9 @@ storage                                    4.14.3    True        False         F
 </li>
 <li>
 <p>Retrieve the OpenShift console URL:</p>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">oc whoami --show-console</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc whoami --show-console</code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -709,9 +718,9 @@ storage                                    4.14.3    True        False         F
 </li>
 <li>
 <p>Once you are done exploring unset the <code>KUBECONFIG</code> variable to move back to your hub cluster.</p>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">unset KUBECONFIG</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">unset KUBECONFIG</code></pre>
 </div>
 </div>
 </li>
@@ -729,9 +738,9 @@ storage                                    4.14.3    True        False         F
 <ol class="arabic">
 <li>
 <p>Create the ManagedCluster resource:</p>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">cat &lt;&lt; EOF | oc apply -f -
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt; EOF | oc apply -f -
 ---
 apiVersion: cluster.open-cluster-management.io/v1
 kind: ManagedCluster
@@ -757,9 +766,9 @@ EOF</code></pre>
 </li>
 <li>
 <p>Validate that your managed cluster has been created:</p>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">oc get managedcluster</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get managedcluster</code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -774,9 +783,9 @@ production      true           https://a355c9fa1f51143bca15661ccb23c008-cf0807c5
 </li>
 <li>
 <p>Once your cluster has been imported you can get more information about the managed cluster by examining the resource:</p>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">oc get managedcluster production -o yaml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get managedcluster production -o yaml</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -800,9 +809,9 @@ production      true           https://a355c9fa1f51143bca15661ccb23c008-cf0807c5
 <ol class="arabic">
 <li>
 <p>Create the KlusterletAddonConfig:</p>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">cat &lt;&lt; EOF | oc apply -f -
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &lt;&lt; EOF | oc apply -f -
 apiVersion: agent.open-cluster-management.io/v1
 kind: KlusterletAddonConfig
 metadata:
@@ -842,9 +851,9 @@ EOF</code></pre>
 <ol class="arabic">
 <li>
 <p>Delete the ManagedCluster. Note that this command is blocking for a while because of the finalizer in the ManagedCluster resource.</p>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">oc delete managedcluster production</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc delete managedcluster production</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -867,9 +876,9 @@ EOF</code></pre>
 </li>
 <li>
 <p>You can not delete a cluster from the console so you need to delete it from the command line. The best way to do that is via the <code>hypershift</code> command line utility because that also cleans up the AWS resources (subnets, VPCs, EIPs) that got created when the cluster got deployed.</p>
-<div class="listingblock">
+<div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">hypershift destroy cluster aws \
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">hcp destroy cluster aws \
   --name production \
   --infra-id production-${GUID} \
   --region us-west-2 \
