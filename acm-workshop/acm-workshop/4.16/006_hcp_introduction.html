@@ -151,7 +151,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="001_accessing_ACM.html">ACM &amp; AWS</a>
+    <a class="nav-link" href="001_accessing_ACM.html">ACM Introduction</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="002_cluster_lifecycle.html">Cluster lifecycle</a>
@@ -225,33 +225,7 @@
 <p>Using hosted control planes is a way to deploy the Control Plane of Red Hat OpenShift Container Platform clusters as pods on other clusters dramatically decreasing the time it takes to provision a new cluster. Worker nodes are still deployed as virtual machines and managed using the new <code>Machine.cluster.x-k8s.io/v1beta1</code> API.</p>
 </div>
 <div class="paragraph">
-<p>Hosted control planes are currently in Tech Preview on Red Hat Advanced Cluster Management for Kubernetes version 2.7.</p>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">The catalog item deploys the following environment</dt>
-<dd>
-<div class="ulist">
-<ul>
-<li>
-<p>OpenShift Container Platform 4.14.</p>
-</li>
-<li>
-<p>Red Hat Advanced Cluster Management for Kubernetes (RHACM) 2.9 installed and configured.</p>
-</li>
-<li>
-<p>Technology preview for HyperShift enabled and configured on RHACM.</p>
-</li>
-<li>
-<p>A small "development" cluster has been pre-deployed using hosted control planes.</p>
-</li>
-</ul>
-</div>
-</dd>
-</dl>
-</div>
-<div class="paragraph">
-<p>The instructions cover the following scenarios:</p>
+<p>The instructions in this workshop cover the following scenarios:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -259,16 +233,10 @@
 <p>Introduction (this document)</p>
 </li>
 <li>
-<p>Explore the pre-installed environment (this document)</p>
+<p><a href="https://github.com/marrober/acm-workshop/blob/main/documentation/modules/ROOT/pages/007_explore_environment.adoc">Exploring the Environment</a></p>
 </li>
 <li>
-<p><a href="https://github.com/redhat-cop/openshift-lab-origin/blob/master/HyperShift_Lab/Explore_Environment.adoc">Exploring the Environment</a></p>
-</li>
-<li>
-<p><a href="https://github.com/redhat-cop/openshift-lab-origin/blob/master/HyperShift_Lab/Deploy_Cluster.adoc">Deploy a cluster using HyperShift</a></p>
-</li>
-<li>
-<p><a href="https://github.com/redhat-cop/openshift-lab-origin/blob/master/HyperShift_Lab/Deploy_Application.adoc">Deploy an application to both clusters using RHACM</a></p>
+<p><a href="https://github.com/marrober/acm-workshop/blob/main/documentation/modules/ROOT/pages/008_deploy_cluster.adoc">Deploy a cluster using HyperShift</a></p>
 </li>
 </ul>
 </div>
@@ -283,7 +251,7 @@
 <div class="ulist">
 <ul>
 <li>
-<p>RHACM 2.9: <a href="https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.9/html/clusters/cluster_mce_overview#hosted-control-planes-intro" class="bare">https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.9/html/clusters/cluster_mce_overview#hosted-control-planes-intro</a></p>
+<p>Openshift 4.18 documentation for <a href="https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/hosted_control_planes/index">hosted control planes</a></p>
 </li>
 </ul>
 </div>
@@ -350,17 +318,6 @@
 <p>Also the OpenShift console URL along with the credentials for the <code>admin</code> user.</p>
 </li>
 </ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next steps</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>This concludes the introduction section of this lab.</p>
-</div>
-<div class="paragraph">
-<p>Follow <a href="https://github.com/redhat-cop/openshift-lab-origin/blob/master/HyperShift_Lab/Explore_Environment.adoc">Exploring the Environment</a> to explore what has been pre-deployed for you.</p>
 </div>
 </div>
 </div>

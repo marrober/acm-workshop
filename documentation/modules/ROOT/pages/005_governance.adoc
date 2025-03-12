@@ -54,7 +54,7 @@ Fortunately, the RHACM console provides an easy way to start creating basic poli
 
 image::ACM_creating_policy.png[Creating policy,width=6500px,float="left",align="center"]
 
-Please consult the GRC product documentation for more details on any of these policy controllers.
+Please consult the GRC product https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.12/html/governance/index[documentation] for more details on any of these policy controllers.
 
 
 == Creating Governance Policies
@@ -65,61 +65,55 @@ image::ACM_create_policy_start.png[Creating policy,width=6500px,float="left",ali
 
 Build a policy with the following information. Watch how the yaml evolves on the right hand side as you add details. Yaml based policies can be stored in a Git repository to be applied to the clusters using a GitOps model.
 
+Name
 [.console-input]
 [source,bash]
 ----
-Name: policy-grc-cert-<initials>
+policy-grc-cert
 ----
 
+Namespace
 [.console-input]
 [source,bash]
 ----
-Namespace: default
+default
 ----
 
-[.console-input]
-[source,bash]
-----
-Specification: Certificate policy
-----
+Click 'next'
 
-Cluster selector - Use the two cluster labels: 
+In the Templates - remediation section select a remediation action of inform.
 
-[.console-input]
-[source,bash]
-----
-environment=prod 
-lab-user=<initials>
-----
+In the Templates - policy templates section select a policy-certificate template. Many different templates exist and you can use this as a guide on what is required for each template type. Later on, you can use the yaml definition to copy a template and create another similar template. All policies can be added to a git repository from where they can be applied to the hub cluster. 
 
-Leave the Standard, Category and Control as they are pre-filled based on the selection of a Certificate policy.
+Leave all other selections at the default settings.
 
-Remediation action: Leave set to inform.
+Click 'next'
 
-The policy definition is shown on the right hand side in the block of yaml as :
+On the placement section select a new placement rule. You will see a pop up window stating that no cluster sets exist. Actually two cluster sets do exist but they are not used for policies. 
 
-[.console-input]
-[source,bash]
-----
-- objectDefinition:
-    apiVersion: policy.open-cluster-management.io/v1
-    kind: CertificatePolicy
-    metadata:
-    name: policy-grc-cert-cert-expiration
-  spec:
-    namespaceSelector:
-      include:
-        - default
-      exclude:
-        - kube-*
-    remediationAction: inform
-    severity: low
-    minimumDuration: 300h
-----
+Click on the blue link for 'Add cluster set' 
 
-Feel free to change the *minimum duration* of a certificate in the above field if you want to.
+When the cluster set section appears in a new browser tab click 'Create cluster set' and give the cluster set a name of all-clusters.  After creating the cluster set you are able to manage the clusters in the cluster set using the 'Manage resource assignments' button. Add both the development and the production clusters.
 
-Click the *Create* button and watch as the policy is applied.
+[NOTE]
+====
+
+Cluster sets are used to manage associated resources. These may be a set of clusters that support a specific business initiative covering development, QA and production. Alternatively a cluster set may be appropriate for a specific purpose such as all production clusters in London.
+====
+
+After saving the cluster set you should see a screen similar to that shown below.
+
+image::ACM_cluster_set.png[Creating policy,width=6500px,float="left",align="center"]
+
+Click on the pencil next to the namespace binding and associate the cluster set with the default namespace that was used to store the policy. This creates a binding between the cluster set and the namespace.
+
+Switch back to the policy creation browser tab and selecft the cluster set in the drop down box.
+
+Click next at the bottom of the screen to move to the policy annotation screen that allows you to associate specific standards, categories and controls with the policy. Based on the previous selection for the specification of the policy this should already be completed.
+
+Click next at the bottom of the screen.
+
+Click Submit at the bottom of the screen.
 
 Initially the policy will show a warning triangle but this is an indicator that it is in the process of assessing the compliance of the selected cluster(s). After a minute or so it will switch to the compliant indicator as shown below. The text on cluster violations indicates that there are 0 out of 1 cluster out of compliance.
 

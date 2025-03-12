@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Advanced Cluster Management :: Clusters and Governance</title>
+    <title>The Web Terminal :: Clusters and Governance</title>
     <meta name="generator" content="Antora 2.3.4">
     <link rel="stylesheet" href="../../_/css/site.css">
 <link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
@@ -206,105 +206,100 @@
 <main class="article">
 <div class="toolbar" role="navigation">
 <button class="nav-toggle"></button>
-  <a href="index.html" class="home-link is-current"></a>
+  <a href="index.html" class="home-link"></a>
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="index.html">Clusters and Governance</a></li>
-    <li><a href="index.html">Advanced Cluster Management</a></li>
+    <li><a href="010_web_terminal.html">The Web Terminal</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///Users/mroberts/data/git-repos/acm-workshop/documentation/modules/ROOT/pages/index.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///Users/mroberts/data/git-repos/acm-workshop/documentation/modules/ROOT/pages/010_web_terminal.adoc">Edit this Page</a></div>
 </div>
   <div class="content">
 <article class="doc">
-<h1 class="page">Advanced Cluster Management</h1>
+<h1 class="page">The Web Terminal</h1>
 <div id="preamble">
 <div class="sectionbody">
+<div class="paragraph">
+<p>Many users have locked down laptops and are unable to use install additional command line utilities for the hosted control plane section. To overcome this you can install the web terminal on OpenShift and then add the hosted control plane command line to that shell.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_install_the_web_terminal"><a class="anchor" href="#_install_the_web_terminal"></a>Install the Web Terminal</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To install the web terminal use the administrator perspective in the OpenShift web user interface by toggling the drop down option under the Red Hat OpenShift logo in the top left corner.</p>
+</div>
+<div class="paragraph">
+<p>From the menus on the left hand side select Operators and then select OperatorHub.</p>
+</div>
+<div class="paragraph">
+<p>In the filter box type 'web terminal' and select the icon with the title "Web Terminal, provided by Red Hat".</p>
+</div>
+<div class="paragraph">
+<p>Press the install button on the pop-up window on the right and the select the install button on the details page for the operator.</p>
+</div>
+<div class="paragraph">
+<p>Wait for the operator to install for about a minute and then refresh the browser. You should see the additional icon for the web terminal which is the '&gt;_' sign as shown below.</p>
+</div>
 <div class="imageblock Left text-center">
 <div class="content">
-<img src="_images/ACM-Logo.png" alt="ACM Logo" width="190px">
+<img src="_images/web-terminal-button.png" alt="Web Terminal button" width="600px">
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_an_introduction_to_red_hat_advanced_cluster_management"><a class="anchor" href="#_an_introduction_to_red_hat_advanced_cluster_management"></a><strong>An introduction to Red Hat Advanced Cluster Management</strong></h2>
+<h2 id="_using_the_web_terminal"><a class="anchor" href="#_using_the_web_terminal"></a>Using the Web Terminal</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This workshop will guide you through the use of Red Hat Advanced Cluster Management (ACM)
-for specific operations covering cluster management and cluster governance. Multiple people will
-use the workshop today and you will operate with a shared ACM management hub and managed
-clusters that are specific to you personally.</p>
+<p>Click on the web terminal link to launch a new terminal. If you are asked to select a namespace simple take the default option.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_workshop_infrastructure"><a class="anchor" href="#_workshop_infrastructure"></a>Workshop infrastructure</h2>
+<h2 id="_installing_the_hcp_command_line"><a class="anchor" href="#_installing_the_hcp_command_line"></a>Installing the HCP command line</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The workshop facilitators will give you URL&#8217;s and credentials for the clusters that you will
-use throughout the workshop.</p>
+<p>A number of command line utilities are available from the OpenShift cluster. To get the URL for the hosted control plane use the command :</p>
 </div>
-<div class="paragraph">
-<p>Credentials will be provided for :</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The ACM Hub</p>
-</li>
-<li>
-<p>The AWS environment to which you need to connect the Hub cluster</p>
-</li>
-<li>
-<p>A single node OpenShift instance</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>The cluster configuration is shown below, with the shared ACM Hub cluster and
-individual managed clusters for each user.</p>
-</div>
-<div class="imageblock Left text-center">
+<div class="listingblock console-input">
 <div class="content">
-<img src="_images/ACM_workshop_clusters.png" alt="ACM Clusters" width="500px">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get consoleclidownload hcp-cli-download -o json | jq -r '.spec.links[] | select(.text=="Download hcp CLI for Linux for x86_64").href'</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The modules are self-paced. Within the description of the Modules there will be Tips and Notes; tips give hints as to what is being done, Notes go into more details about the exercises within the Module.</p>
+<p>To download hcp use the command :</p>
 </div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Tips contain useful additional information around the exercises<br>
-They will relate to the flow of the Module</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl &lt;URL from above&gt; --output hcp.tar.gz</code></pre>
 </div>
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Notes will contain in-depth information around the concepts; they are added for interest and detailed knowledge</p>
-</div>
-</td>
-</tr>
-</table>
 </div>
 <div class="paragraph">
-<p>To personalise the Modules add the cluster address (given below with a 'copy' button) and the Project you are using into the text entry boxes at the top of the interface. These are propagated through the
-examples so you only need to add them once.</p>
+<p>Expand the tar file :</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">tar -xvf hcp.tar.gz</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Edit the .bashrc file using the vi editor and add the following line to the end.</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export PATH=$PATH:.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Source the bash script to apply it with the command :</p>
+</div>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">source .bashrc</code></pre>
+</div>
 </div>
 </div>
 </div>

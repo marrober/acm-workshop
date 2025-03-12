@@ -1,4 +1,4 @@
-* xref:001_accessing_ACM.adoc[ACM & AWS]
+* xref:001_accessing_ACM.adoc[ACM Introduction]
 ** xref:002_cluster_lifecycle.adoc[Cluster lifecycle]
 ** xref:003_create_cluster.adoc[Create cluster]
 ** xref:004_adding_a_cluster_to_ACM.adoc[Adding a cluster to ACM]

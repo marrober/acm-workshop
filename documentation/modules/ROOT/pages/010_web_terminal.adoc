@@ -1,0 +1,63 @@
+# The Web Terminal
+
+Many users have locked down laptops and are unable to use install additional command line utilities for the hosted control plane section. To overcome this you can install the web terminal on OpenShift and then add the hosted control plane command line to that shell.
+
+## Install the Web Terminal
+
+To install the web terminal use the administrator perspective in the OpenShift web user interface by toggling the drop down option under the Red Hat OpenShift logo in the top left corner. 
+
+From the menus on the left hand side select Operators and then select OperatorHub. 
+
+In the filter box type 'web terminal' and select the icon with the title "Web Terminal, provided by Red Hat". 
+
+Press the install button on the pop-up window on the right and the select the install button on the details page for the operator.
+
+Wait for the operator to install for about a minute and then refresh the browser. You should see the additional icon for the web terminal which is the '>_' sign as shown below.
+
+image::web-terminal-button.png[Web Terminal button,width=600px,float="Left",align="center"]
+
+## Using the Web Terminal
+
+Click on the web terminal link to launch a new terminal. If you are asked to select a namespace simple take the default option. 
+
+## Installing the HCP command line
+
+A number of command line utilities are available from the OpenShift cluster. To get the URL for the hosted control plane use the command :
+
+[.console-input]
+[source,bash]
+----
+oc get consoleclidownload hcp-cli-download -o json | jq -r '.spec.links[] | select(.text=="Download hcp CLI for Linux for x86_64").href'
+----
+
+To download hcp use the command :
+
+[.console-input]
+[source,bash]
+----
+curl <URL from above> --output hcp.tar.gz
+----
+
+Expand the tar file :
+
+[.console-input]
+[source,bash]
+----
+tar -xvf hcp.tar.gz 
+---- 
+
+Edit the .bashrc file using the vi editor and add the following line to the end.
+
+[.console-input]
+[source,bash]
+----
+export PATH=$PATH:.
+----
+
+Source the bash script to apply it with the command : 
+
+[.console-input]
+[source,bash]
+----
+source .bashrc
+----

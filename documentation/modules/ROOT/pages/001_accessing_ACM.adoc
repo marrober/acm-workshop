@@ -1,11 +1,24 @@
 = Accessing Advanced Cluster Management
 
-As of ACM 2.7, the Web User interfaceis integrated with the OpenShift console via console plugins.
+As of ACM 2.7, the Web User interface is integrated with the OpenShift console via console plugins.
 Once logged in, navigate to the MultiCluster Switcher and select All Clusters to see the ACM UI.
 
 image::ACM_Function_Selector.png[ACM Function Selector,width=400px,float="Left",align="center"]
 
 Now, navigate to the Clusters screen, you will notice that the Hub cluster is already in 
-the list as a managed cluster (local-cluster), we will use this later in the workshop. 
+the list as a managed cluster (local-cluster), and other clusters may also be listed depending on the starting point for the workshop. 
 
 image::ACM_Cluster_list_initial.png[ACM Cluster list,width=750px,float="Left",align="center"]
+
+== View clusters
+
+Select one of the clusters and click on the name link. 
+
+=== Traditional control plane
+
+If this is a 'traditional' cluster with physical or virtual nodes for the control plane then you will see a details section first, in the overview section. This contains information on the cluster loction and version together with links for the cluster API and console. it also contains the admin username and password for any clusters created by ACM.
+
+=== Hosted control plane
+
+If the cluster has a control plane which is hosted on the main cluster then the first section will be the control plane status showing information on the readiness of each element.
+

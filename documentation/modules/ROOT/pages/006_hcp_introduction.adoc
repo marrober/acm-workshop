@@ -4,28 +4,17 @@
 
 Using hosted control planes is a way to deploy the Control Plane of Red Hat OpenShift Container Platform clusters as pods on other clusters dramatically decreasing the time it takes to provision a new cluster. Worker nodes are still deployed as virtual machines and managed using the new `Machine.cluster.x-k8s.io/v1beta1` API.
 
-Hosted control planes are currently in Tech Preview on Red Hat Advanced Cluster Management for Kubernetes version 2.7.
-
-The catalog item deploys the following environment::
-
-* OpenShift Container Platform 4.14.
-* Red Hat Advanced Cluster Management for Kubernetes (RHACM) 2.9 installed and configured.
-* Technology preview for HyperShift enabled and configured on RHACM.
-* A small "development" cluster has been pre-deployed using hosted control planes.
-
-The instructions cover the following scenarios:
+The instructions in this workshop cover the following scenarios:
 
 * Introduction (this document)
-* Explore the pre-installed environment (this document)
-* https://github.com/redhat-cop/openshift-lab-origin/blob/master/HyperShift_Lab/Explore_Environment.adoc[Exploring the Environment]
-* https://github.com/redhat-cop/openshift-lab-origin/blob/master/HyperShift_Lab/Deploy_Cluster.adoc[Deploy a cluster using HyperShift]
-* https://github.com/redhat-cop/openshift-lab-origin/blob/master/HyperShift_Lab/Deploy_Application.adoc[Deploy an application to both clusters using RHACM]
+* https://github.com/marrober/acm-workshop/blob/main/documentation/modules/ROOT/pages/007_explore_environment.adoc[Exploring the Environment]
+* https://github.com/marrober/acm-workshop/blob/main/documentation/modules/ROOT/pages/008_deploy_cluster.adoc[Deploy a cluster using HyperShift]
 
 == Documentation
 
 Further documentation about enabling, configuring and using hosted control planes can be found at the following link:
 
-* RHACM 2.9: https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.9/html/clusters/cluster_mce_overview#hosted-control-planes-intro
+* Openshift 4.18 documentation for https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/hosted_control_planes/index[hosted control planes]
 
 == Information you will need
 
@@ -48,8 +37,3 @@ Make note of the following information:
 * The password to be used with user `lab-user` on the bastion VM
 * Also the OpenShift console URL along with the credentials for the `admin` user.
 
-== Next steps
-
-This concludes the introduction section of this lab. 
-
-Follow https://github.com/redhat-cop/openshift-lab-origin/blob/master/HyperShift_Lab/Explore_Environment.adoc[Exploring the Environment] to explore what has been pre-deployed for you.

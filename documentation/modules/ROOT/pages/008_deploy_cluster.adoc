@@ -71,7 +71,7 @@ hcp create cluster aws \
   --name production \
   --infra-id prod-${GUID} \
   --region us-west-1 \
-  --zones us-west-1a,us-west-1c \
+  --zones us-west-1b,us-west-1c \
   --instance-type m6a.large \
   --root-volume-type gp3 \
   --root-volume-size 100 \
@@ -522,6 +522,13 @@ EOF
 == Deleting a cluster with hosted control planes
 
 Deleting a cluster with hosted control planes is a two step process. First delete the ManagedCluster resource, then run `hypershift destroy` to delete the HostedCluster resource and AWS cloud infrastructure.
+
+[IMPORTANT]
+====
+Come back to this section later if you want to apply any governance policies to the cluster.
+====
+
+=== Delete the cluster
 
 . Delete the ManagedCluster. Note that this command is blocking for a while because of the finalizer in the ManagedCluster resource.
 +

@@ -151,7 +151,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="001_accessing_ACM.html">ACM &amp; AWS</a>
+    <a class="nav-link" href="001_accessing_ACM.html">ACM Introduction</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="002_cluster_lifecycle.html">Cluster lifecycle</a>
@@ -307,7 +307,7 @@
 </div>
 </div>
 <div class="paragraph">
-<p>Please consult the GRC product documentation for more details on any of these policy controllers.</p>
+<p>Please consult the GRC product <a href="https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.12/html/governance/index">documentation</a> for more details on any of these policy controllers.</p>
 </div>
 </div>
 </div>
@@ -326,62 +326,82 @@
 <div class="paragraph">
 <p>Build a policy with the following information. Watch how the yaml evolves on the right hand side as you add details. Yaml based policies can be stored in a Git repository to be applied to the clusters using a GitOps model.</p>
 </div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Name: policy-grc-cert-&lt;initials&gt;</code></pre>
-</div>
-</div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Namespace: default</code></pre>
-</div>
+<div class="paragraph">
+<p>Name</p>
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Specification: Certificate policy</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">policy-grc-cert</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Cluster selector - Use the two cluster labels:</p>
+<p>Namespace</p>
 </div>
 <div class="listingblock console-input">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">environment=prod
-lab-user=&lt;initials&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">default</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Leave the Standard, Category and Control as they are pre-filled based on the selection of a Certificate policy.</p>
+<p>Click 'next'</p>
 </div>
 <div class="paragraph">
-<p>Remediation action: Leave set to inform.</p>
+<p>In the Templates - remediation section select a remediation action of inform.</p>
 </div>
 <div class="paragraph">
-<p>The policy definition is shown on the right hand side in the block of yaml as :</p>
+<p>In the Templates - policy templates section select a policy-certificate template. Many different templates exist and you can use this as a guide on what is required for each template type. Later on, you can use the yaml definition to copy a template and create another similar template. All policies can be added to a git repository from where they can be applied to the hub cluster.</p>
 </div>
-<div class="listingblock console-input">
+<div class="paragraph">
+<p>Leave all other selections at the default settings.</p>
+</div>
+<div class="paragraph">
+<p>Click 'next'</p>
+</div>
+<div class="paragraph">
+<p>On the placement section select a new placement rule. You will see a pop up window stating that no cluster sets exist. Actually two cluster sets do exist but they are not used for policies.</p>
+</div>
+<div class="paragraph">
+<p>Click on the blue link for 'Add cluster set'</p>
+</div>
+<div class="paragraph">
+<p>When the cluster set section appears in a new browser tab click 'Create cluster set' and give the cluster set a name of all-clusters.  After creating the cluster set you are able to manage the clusters in the cluster set using the 'Manage resource assignments' button. Add both the development and the production clusters.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Cluster sets are used to manage associated resources. These may be a set of clusters that support a specific business initiative covering development, QA and production. Alternatively a cluster set may be appropriate for a specific purpose such as all production clusters in London.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>After saving the cluster set you should see a screen similar to that shown below.</p>
+</div>
+<div class="imageblock left text-center">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">- objectDefinition:
-    apiVersion: policy.open-cluster-management.io/v1
-    kind: CertificatePolicy
-    metadata:
-    name: policy-grc-cert-cert-expiration
-  spec:
-    namespaceSelector:
-      include:
-        - default
-      exclude:
-        - kube-*
-    remediationAction: inform
-    severity: low
-    minimumDuration: 300h</code></pre>
+<img src="_images/ACM_cluster_set.png" alt="Creating policy" width="6500px">
 </div>
 </div>
 <div class="paragraph">
-<p>Feel free to change the <strong>minimum duration</strong> of a certificate in the above field if you want to.</p>
+<p>Click on the pencil next to the namespace binding and associate the cluster set with the default namespace that was used to store the policy. This creates a binding between the cluster set and the namespace.</p>
 </div>
 <div class="paragraph">
-<p>Click the <strong>Create</strong> button and watch as the policy is applied.</p>
+<p>Switch back to the policy creation browser tab and selecft the cluster set in the drop down box.</p>
+</div>
+<div class="paragraph">
+<p>Click next at the bottom of the screen to move to the policy annotation screen that allows you to associate specific standards, categories and controls with the policy. Based on the previous selection for the specification of the policy this should already be completed.</p>
+</div>
+<div class="paragraph">
+<p>Click next at the bottom of the screen.</p>
+</div>
+<div class="paragraph">
+<p>Click Submit at the bottom of the screen.</p>
 </div>
 <div class="paragraph">
 <p>Initially the policy will show a warning triangle but this is an indicator that it is in the process of assessing the compliance of the selected cluster(s). After a minute or so it will switch to the compliant indicator as shown below. The text on cluster violations indicates that there are 0 out of 1 cluster out of compliance.</p>

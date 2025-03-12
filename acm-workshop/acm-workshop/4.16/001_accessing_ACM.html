@@ -151,7 +151,7 @@
 <ul class="nav-list">
   <li class="nav-item is-current-page" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="001_accessing_ACM.html">ACM &amp; AWS</a>
+    <a class="nav-link" href="001_accessing_ACM.html">ACM Introduction</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="002_cluster_lifecycle.html">Cluster lifecycle</a>
@@ -210,7 +210,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="index.html">Clusters and Governance</a></li>
-    <li><a href="001_accessing_ACM.html">ACM &amp; AWS</a></li>
+    <li><a href="001_accessing_ACM.html">ACM Introduction</a></li>
   </ul>
 </nav>
   <div class="edit-this-page"><a href="file:///Users/mroberts/data/git-repos/acm-workshop/documentation/modules/ROOT/pages/001_accessing_ACM.adoc">Edit this Page</a></div>
@@ -218,8 +218,10 @@
   <div class="content">
 <article class="doc">
 <h1 class="page">Accessing Advanced Cluster Management</h1>
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
-<p>As of ACM 2.7, the Web User interfaceis integrated with the OpenShift console via console plugins.
+<p>As of ACM 2.7, the Web User interface is integrated with the OpenShift console via console plugins.
 Once logged in, navigate to the MultiCluster Switcher and select All Clusters to see the ACM UI.</p>
 </div>
 <div class="imageblock Left text-center">
@@ -229,11 +231,33 @@ Once logged in, navigate to the MultiCluster Switcher and select All Clusters to
 </div>
 <div class="paragraph">
 <p>Now, navigate to the Clusters screen, you will notice that the Hub cluster is already in
-the list as a managed cluster (local-cluster), we will use this later in the workshop.</p>
+the list as a managed cluster (local-cluster), and other clusters may also be listed depending on the starting point for the workshop.</p>
 </div>
 <div class="imageblock Left text-center">
 <div class="content">
 <img src="_images/ACM_Cluster_list_initial.png" alt="ACM Cluster list" width="750px">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_view_clusters"><a class="anchor" href="#_view_clusters"></a>View clusters</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Select one of the clusters and click on the name link.</p>
+</div>
+<div class="sect2">
+<h3 id="_traditional_control_plane"><a class="anchor" href="#_traditional_control_plane"></a>Traditional control plane</h3>
+<div class="paragraph">
+<p>If this is a 'traditional' cluster with physical or virtual nodes for the control plane then you will see a details section first, in the overview section. This contains information on the cluster loction and version together with links for the cluster API and console. it also contains the admin username and password for any clusters created by ACM.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_hosted_control_plane"><a class="anchor" href="#_hosted_control_plane"></a>Hosted control plane</h3>
+<div class="paragraph">
+<p>If the cluster has a control plane which is hosted on the main cluster then the first section will be the control plane status showing information on the readiness of each element.</p>
+</div>
+</div>
 </div>
 </div>
 </article>

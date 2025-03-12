@@ -151,7 +151,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="001_accessing_ACM.html">ACM &amp; AWS</a>
+    <a class="nav-link" href="001_accessing_ACM.html">ACM Introduction</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="002_cluster_lifecycle.html">Cluster lifecycle</a>
@@ -299,7 +299,7 @@ Use "hcp [command] --help" for more information about a command.</code></pre>
   --name production \
   --infra-id prod-${GUID} \
   --region us-west-1 \
-  --zones us-west-1a,us-west-1c \
+  --zones us-west-1b,us-west-1c \
   --instance-type m6a.large \
   --root-volume-type gp3 \
   --root-volume-size 100 \
@@ -847,6 +847,22 @@ EOF</code></pre>
 <div class="paragraph">
 <p>Deleting a cluster with hosted control planes is a two step process. First delete the ManagedCluster resource, then run <code>hypershift destroy</code> to delete the HostedCluster resource and AWS cloud infrastructure.</p>
 </div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Come back to this section later if you want to apply any governance policies to the cluster.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_delete_the_cluster"><a class="anchor" href="#_delete_the_cluster"></a>Delete the cluster</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -918,6 +934,7 @@ Using baseDomain from the secret-creds baseDomain p6mj8.sandbox2651.opentlc.com
 </div>
 </li>
 </ol>
+</div>
 </div>
 </div>
 </div>
