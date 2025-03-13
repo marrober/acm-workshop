@@ -123,3 +123,40 @@ A number of other example policies are available in a git repository that can be
 
 To illustrate a different approach these policies use a label selector to apply the policy to a specific cluster.
 
+In the web terminal on the host cluster, or in a local command shell logged into the host cluster, execute the command below to clone the git repository :
+
+[.console-input]
+[source,bash]
+----
+git clone https://github.com/marrober/acm-workshop.git
+----
+
+=== Compliance operator
+
+Open a web interface tab on one of the managed clusters and select the administrator perspective in the top left hand corner. From the menu on the left hand side select Operators and then Installed Operators. This is selected first so that you can quickly move to that tab and watch the operator be installed. 
+
+In the web terminal on the host cluster, switch to the policies directory :
+
+[.console-input]
+[source,bash]
+----
+cd acm-workshop/policies/
+----
+
+Install the compliance operator policy :
+
+[.console-input]
+[source,bash]
+----
+oc apply -f compliance-operator/
+----
+
+Ensure that there are no errors reported from the application of the yaml file and then switch to the policies tab of the ACM host. You should see the new policy has been created. 
+
+==== Policy Status
+
+The new policy will initially show a yellow triangle for the managed clusters to indicate that it doesn't have enough information to assess compliance with the policy at this time. 
+
+After a few secconds the policy will show a red warning and a count for the number of clusters that are out of compliance. Check the operators in the tab that was prepared a few moments ago and you should see the operator installing. 
+
+After the policy is installed check the status in the ACM policies again and you should see that it has a green status showing all clusters are compliant with the policy.
