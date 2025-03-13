@@ -107,7 +107,7 @@ image::ACM_cluster_set.png[Creating policy,width=6500px,float="left",align="cent
 
 Click on the pencil next to the namespace binding and associate the cluster set with the default namespace that was used to store the policy. This creates a binding between the cluster set and the namespace.
 
-Switch back to the policy creation browser tab and selecft the cluster set in the drop down box.
+Switch back to the policy creation browser tab and select the cluster set in the drop down box.
 
 Click next at the bottom of the screen to move to the policy annotation screen that allows you to associate specific standards, categories and controls with the policy. Based on the previous selection for the specification of the policy this should already be completed.
 
