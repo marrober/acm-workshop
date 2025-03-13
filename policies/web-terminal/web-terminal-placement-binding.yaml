@@ -1,0 +1,14 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-policy-web-terminal
+  labels:
+    policy: web-terminal
+placementRef:
+  name: openshift-clusters
+  kind: PlacementRule
+  apiGroup: apps.open-cluster-management.io
+subjects:
+- name: web-terminal
+  kind: Policy
+  apiGroup: policy.open-cluster-management.io

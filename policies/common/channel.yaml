@@ -1,0 +1,9 @@
+apiVersion: apps.open-cluster-management.io/v1
+kind: Channel
+metadata:
+  name: policy-channel
+  labels:
+    policy: limit-range
+spec:
+  type: GitHub
+  pathname: https://github.com/marrober/layers-deployment.git

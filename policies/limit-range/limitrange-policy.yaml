@@ -1,0 +1,40 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-limitrange
+  labels:
+    policy: limit-range
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: policy-limitrange
+        spec:
+          severity: medium
+          remediationAction: enforce
+          namespaceSelector:
+            include:
+            - 'test-*'
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                kind: LimitRange
+                metadata:
+                  name: default-limit-range
+                spec:
+                  limits:
+                  - type: Container
+                    default:
+                      cpu: 500m
+                      memory: 512Mi
+                    defaultRequest:
+                      cpu: 50m
+                      memory: 256Mi
+                    max:
+                      cpu: 2
+                      memory: 4Gi

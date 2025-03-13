@@ -117,3 +117,9 @@ Click Submit at the bottom of the screen.
 
 Initially the policy will show a warning triangle but this is an indicator that it is in the process of assessing the compliance of the selected cluster(s). After a minute or so it will switch to the compliant indicator as shown below. The text on cluster violations indicates that there are 0 out of 1 cluster out of compliance.
 
+== Other Example Policies
+
+A number of other example policies are available in a git repository that can be cloned and applied as shown below.
+
+To illustrate a different approach these policies use a label selector to apply the policy to a specific cluster.
+
